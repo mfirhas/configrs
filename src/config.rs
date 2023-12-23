@@ -83,7 +83,7 @@ impl Config {
     }
 
     /// Build configs into T
-    pub fn build<T>(self) -> T
+    pub fn build<T>(self) -> Result<T, ConfigError>
     where
         T: DeserializeOwned + Debug,
     {
