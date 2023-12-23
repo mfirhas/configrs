@@ -5,7 +5,11 @@ edition = "2021"
 authors = ["Muhammad Fathir Irhas <mfathirirhas@gmail.com>"]
 description = "Configuration library"
 license = "MIT"
+repository = "https://github.com/mfirhas/configrs"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+serde = { version = "1.0.163", features = ["derive"] }
+serde_json = "1.0.108"
+rust-ini = "0.20.0"
