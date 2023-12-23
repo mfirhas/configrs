@@ -36,6 +36,53 @@ pub enum Value {
     Map(HashMap<String, Value>),
 }
 
+impl From<bool> for Value {
+    fn from(value: bool) -> Self {
+        Self::Bool(value)
+    }
+}
+
+impl From<i64> for Value {
+    fn from(value: i64) -> Self {
+        Self::Int64(value)
+    }
+}
+
+impl From<f64> for Value {
+    fn from(value: f64) -> Self {
+        Self::Float64(value)
+    }
+}
+
+impl<'a> From<&'a str> for Value {
+    fn from(value: &'a str) -> Self {
+        Self::String(value.into())
+    }
+}
+
+impl<V> From<Vec<V>> for Value
+where
+    V: Into<Value>,
+{
+    fn from(value: Vec<V>) -> Self {
+        Self::Array(value.into_iter().map(|v| v.into()).collect::<Vec<Value>>())
+    }
+}
+
+impl<V> From<HashMap<String, V>> for Value
+where
+    V: Into<Value>,
+{
+    fn from(value: HashMap<String, V>) -> Self {
+        Self::Map(
+            value
+                .into_iter()
+                .map(|(k, v)| (k, v.into()))
+                .collect::<HashMap<String, Value>>(),
+        )
+    }
+}
+
 /// Starting point to build your configs.
 #[derive(Debug)]
 pub struct Config();
@@ -48,7 +95,12 @@ impl Config {
     }
 
     /// Set key and value programmatically.
-    pub fn with_value(mut self, key: &str, value: Value) -> Self {
+    ///
+    /// Accepted `Value`: &str, i64, f64, bool, Vector<Value>,
+    pub fn with_value<V>(mut self, key: &str, value: V) -> Self
+    where
+        V: Into<Value> + Debug,
+    {
         todo!()
     }
 
