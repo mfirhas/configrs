@@ -1,22 +1,42 @@
-ENV_STRING: string
-ENV_INTEGER: '123'
-ENV_FLOAT: '123.0'
-ENV_BOOLEAN: 'true'
-ENV_ARR: 'anu,nganu,lskmdf,lwkef,lkemrg'
-SUB_ENV:
-  SUB_ENV_STRING: string
-  SUB_ENV_INTEGER: '123'
-  SUB_ENV_BOOLEAN: 'true'
-  SUB_ENV_ARR: 'anu,nganu,lskmdf,lwkef,lkemrg'
-  SUB_SUB_ENV:
-    SUB_SUB_ENV_STRING: string
-    SUB_SUB_ENV_INTEGER: '123'
-    SUB_SUB_ENV_FLOAT: '123.0'
-    SUB_SUB_ENV_BOOLEAN: 'true'
-    SUB_SUB_ENV_ARR: 'anu,nganu,lskmdf,lwkef,lkemrg'
-SUB_ENV_2:
-  SUB_ENV_2_STRING: string
-  SUB_ENV_2_INTEGER: '123'
-  SUB_ENV_2_FLOAT: '123.0'
-  SUB_ENV_2_BOOLEAN: 'true'
-  SUB_ENV_2_ARR: 'anu,nganu,lskmdf,lwkef,lkemrg'
+envString: string
+envInteger: 123
+envFloat: 123
+envBoolean: true
+envArr:
+  - anu
+  - nganu
+  - lskmdf
+  - lwkef
+  - lkemrg
+subEnv:
+  subEnvString: string
+  subEnvInteger: 123
+  subEnvFloat: 123
+  subEnvBoolean: true
+  subEnvArr:
+    - anu
+    - nganu
+    - lskmdf
+    - lwkef
+    - lkemrg
+  subSubEnv:
+    subSubEnvInteger: 123
+    subSubEnvFloat: 123
+    subSubEnvBoolean: true
+    subSubEnvArr:
+      - anu
+      - nganu
+      - lskmdf
+      - lwkef
+      - lkemrg
+subEnv2:
+  subEnv2String: string
+  subEnv2Integer: 123
+  subEnv2Float: 123
+  subEnv2Boolean: true
+  subEnv2Arr:
+    - anu
+    - nganu
+    - lskmdf
+    - lwkef
+    - lkemrg
