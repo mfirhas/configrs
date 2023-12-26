@@ -621,12 +621,14 @@ fn test_with_overwrite() {
         cfg.sub_env_2.sub_env_2_arr,
         vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]
     );
+
+    std::env::remove_var("envInteger"); // should be overwritten by 123
 }
 
 // Load config from env vars and overwrite with json file, without overwrite. It should failed.
 #[test]
 fn test_without_overwrite() {
-    std::env::set_var("envInteger", "99999"); // should be overwritten by 123
+    std::env::set_var("envInteger", "99999");
 
     let file_path = "../tests/data/yaml/test.yaml";
     #[derive(Debug, Serialize, Deserialize)]
@@ -726,4 +728,6 @@ fn test_without_overwrite() {
         cfg.sub_env_2.sub_env_2_arr,
         vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]
     );
+
+    std::env::remove_var("envInteger"); // should be overwritten by 123
 }
