@@ -1,4 +1,7 @@
 // test file for loading configuration from environment variables
+// TODO: refactor this tests into more succinct/simpler,
+// option1: https://crates.io/crates/test-case
+// option2: https://crates.io/crates/proptest
 
 use serde::Deserialize;
 
