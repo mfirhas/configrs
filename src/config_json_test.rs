@@ -1,4 +1,4 @@
-// test file for loading configuration from environment variables
+// test file for loading configuration from json file
 
 use serde::{Deserialize, Serialize};
 
@@ -7,7 +7,7 @@ use crate::config::*;
 // load all and success
 #[test]
 fn test_json_success() {
-    let file_path = "../tests/data/env/test.env";
+    let file_path = "../tests/data/json/test.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "envString")]
@@ -107,7 +107,7 @@ fn test_json_success() {
 // there is missing env key in env file
 #[test]
 fn test_json_missing_key() {
-    let file_path = "../tests/data/env/test_missing_field.env";
+    let file_path = "../tests/data/json/test_missing_field.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "envString")]
@@ -178,7 +178,7 @@ fn test_json_missing_key() {
 // load with default(trait) value for non-existing env in env file and success
 #[test]
 fn test_json_default_success() {
-    let file_path = "../tests/data/env/test_missing_field.env";
+    let file_path = "../tests/data/json/test_missing_field.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "envString")]
@@ -278,7 +278,7 @@ fn test_json_default_success() {
 // load with custom default value for non-existing env in env file
 #[test]
 fn test_json_custom_default_success() {
-    let file_path = "../tests/data/env/test_missing_field.env";
+    let file_path = "../tests/data/json/test_missing_field.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "envString")]
@@ -381,7 +381,7 @@ fn test_json_custom_default_success() {
 // load with different letter case between env file and structs's fields
 #[test]
 fn test_json_field_case_sensitive_failed() {
-    let file_path = "../tests/data/env/test.env";
+    let file_path = "../tests/data/json/test.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         // #[serde(alias = "envString")]
@@ -451,7 +451,7 @@ fn test_json_field_case_sensitive_failed() {
 // load with different letter case between env file and structs's serde alias
 #[test]
 fn test_json_alias_case_sensitive_failed() {
-    let file_path = "../tests/data/env/test.env";
+    let file_path = "../tests/data/json/test.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "eNvString")]

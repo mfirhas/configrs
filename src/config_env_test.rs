@@ -1,4 +1,4 @@
-// test file for loading configuration from environment variables
+// test file for loading configuration from .env file
 
 use serde::{Deserialize, Serialize};
 
