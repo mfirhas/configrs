@@ -1029,3 +1029,207 @@ fn test_env_vars_nested_default_custom_success() {
     env::remove_var("ENV_BOOL_NESTED_NESTED");
     env::remove_var("ENV_ARR_NESTED_NESTED");
 }
+
+// Load config from env with additional constant config with overwrite will overwrite config from env
+#[test]
+fn test_with_overwrite() {
+    // setup
+    env::set_var("ENV_STRING", "anu");
+    env::set_var("ENV_INT", "123");
+    env::set_var("ENV_FLOAT", "123.0");
+    env::set_var("ENV_BOOL", "true");
+    env::set_var("ENV_ARR", "123,234,345,456");
+    env::set_var("ENV_STRING_NESTED", "anu");
+    env::set_var("ENV_INT_NESTED", "123");
+    env::set_var("ENV_FLOAT_NESTED", "123.0");
+    env::set_var("ENV_BOOL_NESTED", "true");
+    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    env::set_var("ENV_INT_NESTED_NESTED", "123");
+    env::set_var("ENV_FLOAT_NESTED_NESTED", "123.0");
+    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+
+    // type
+    #[derive(Debug, Deserialize)]
+    struct Cfg {
+        #[serde(alias = "ENV_STRING")]
+        string: String,
+        #[serde(alias = "ENV_INT")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR")]
+        arr: Vec<i32>,
+        #[serde(flatten)]
+        cfg_nested: CfgNested,
+    }
+    #[derive(Debug, Deserialize)]
+    struct CfgNested {
+        #[serde(alias = "ENV_STRING_NESTED")]
+        string: String,
+        #[serde(alias = "ENV_INT_NESTED")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT_NESTED")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL_NESTED")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR_NESTED")]
+        arr: Vec<i32>,
+        #[serde(flatten)]
+        cfg_nested_nested: CfgNestedNested,
+    }
+    #[derive(Debug, Deserialize)]
+    struct CfgNestedNested {
+        #[serde(alias = "ENV_STRING_NESTED_NESTED")]
+        string: String,
+        #[serde(alias = "ENV_INT_NESTED_NESTED")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT_NESTED_NESTED")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL_NESTED_NESTED")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR_NESTED_NESTED")]
+        arr: Vec<i32>,
+    }
+
+    // run
+    let cfg = Config::new()
+        .with_overwrite()
+        .with_value("ENV_ARR_NESTED_NESTED", vec![1, 2])
+        .build::<Cfg>();
+
+    // assert
+    assert!(&cfg.is_ok());
+    let cfg = cfg.unwrap();
+    assert_eq!(cfg.string, "anu");
+    assert_eq!(cfg.boolean, false);
+    assert_eq!(cfg.int, 123);
+    assert_eq!(cfg.float, 123.0);
+    assert_eq!(cfg.arr, vec![123, 234, 345, 456]);
+    assert_eq!(cfg.cfg_nested.string, "anu");
+    assert_eq!(cfg.cfg_nested.boolean, false);
+    assert_eq!(cfg.cfg_nested.int, 123);
+    assert_eq!(cfg.cfg_nested.float, 123.0);
+    assert_eq!(cfg.cfg_nested.arr, vec![123, 234, 345, 456]);
+    assert_eq!(cfg.cfg_nested.cfg_nested_nested.string, "anu");
+    assert_eq!(cfg.cfg_nested.cfg_nested_nested.boolean, false);
+    assert_eq!(cfg.cfg_nested.cfg_nested_nested.int, 123);
+    assert_eq!(cfg.cfg_nested.cfg_nested_nested.float, 123.0);
+    assert_eq!(
+        cfg.cfg_nested.cfg_nested_nested.arr,
+        // vec![123, 234, 345, 456]
+        vec![1, 2] // overwritten
+    );
+
+    // teardown
+    env::remove_var("ENV_STRING");
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_FLOAT");
+    env::remove_var("ENV_BOOL");
+    env::remove_var("ENV_ARR");
+    env::remove_var("ENV_STRING_NESTED");
+    env::remove_var("ENV_INT_NESTED");
+    env::remove_var("ENV_FLOAT_NESTED");
+    env::remove_var("ENV_BOOL_NESTED");
+    env::remove_var("ENV_ARR_NESTED");
+    env::remove_var("ENV_STRING_NESTED_NESTED");
+    env::remove_var("ENV_INT_NESTED_NESTED");
+    env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    env::remove_var("ENV_BOOL_NESTED_NESTED");
+    env::remove_var("ENV_ARR_NESTED_NESTED");
+}
+
+// Load config from env with additional constant config without overwrite success will failed to overwrite config from env
+#[test]
+fn test_without_overwrite() {
+    // setup
+    env::set_var("ENV_STRING", "anu");
+    env::set_var("ENV_INT", "123");
+    env::set_var("ENV_FLOAT", "123.0");
+    env::set_var("ENV_BOOL", "true");
+    env::set_var("ENV_ARR", "123,234,345,456");
+    env::set_var("ENV_STRING_NESTED", "anu");
+    env::set_var("ENV_INT_NESTED", "123");
+    env::set_var("ENV_FLOAT_NESTED", "123.0");
+    env::set_var("ENV_BOOL_NESTED", "true");
+    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    env::set_var("ENV_INT_NESTED_NESTED", "123");
+    env::set_var("ENV_FLOAT_NESTED_NESTED", "123.0");
+    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+
+    // type
+    #[derive(Debug, Deserialize)]
+    struct Cfg {
+        #[serde(alias = "ENV_STRING")]
+        string: String,
+        #[serde(alias = "ENV_INT")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR")]
+        arr: Vec<i32>,
+        #[serde(flatten)]
+        cfg_nested: CfgNested,
+    }
+    #[derive(Debug, Deserialize)]
+    struct CfgNested {
+        #[serde(alias = "ENV_STRING_NESTED")]
+        string: String,
+        #[serde(alias = "ENV_INT_NESTED")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT_NESTED")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL_NESTED")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR_NESTED")]
+        arr: Vec<i32>,
+        #[serde(flatten)]
+        cfg_nested_nested: CfgNestedNested,
+    }
+    #[derive(Debug, Deserialize)]
+    struct CfgNestedNested {
+        #[serde(alias = "ENV_STRING_NESTED_NESTED")]
+        string: String,
+        #[serde(alias = "ENV_INT_NESTED_NESTED")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT_NESTED_NESTED")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL_NESTED_NESTED")]
+        boolean: bool,
+        #[serde(alias = "ENV_ARR_NESTED_NESTED")]
+        arr: Vec<i32>,
+    }
+
+    // run
+    let cfg = Config::new()
+        // .with_overwrite() // no overwrite
+        .with_value("ENV_ARR_NESTED_NESTED", vec![1, 2])
+        .build::<Cfg>();
+
+    // assert
+    assert!(&cfg.is_err());
+
+    // teardown
+    env::remove_var("ENV_STRING");
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_FLOAT");
+    env::remove_var("ENV_BOOL");
+    env::remove_var("ENV_ARR");
+    env::remove_var("ENV_STRING_NESTED");
+    env::remove_var("ENV_INT_NESTED");
+    env::remove_var("ENV_FLOAT_NESTED");
+    env::remove_var("ENV_BOOL_NESTED");
+    env::remove_var("ENV_ARR_NESTED");
+    env::remove_var("ENV_STRING_NESTED_NESTED");
+    env::remove_var("ENV_INT_NESTED_NESTED");
+    env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    env::remove_var("ENV_BOOL_NESTED_NESTED");
+    env::remove_var("ENV_ARR_NESTED_NESTED");
+}
