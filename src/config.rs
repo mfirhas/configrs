@@ -83,6 +83,33 @@ where
     }
 }
 
+impl Display for Value {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match *self {
+            Value::Bool(v) => {
+                write!(f, "{}", v)
+            }
+            Value::Int64(v) => {
+                write!(f, "{}", v)
+            }
+            Value::Float64(v) => {
+                write!(f, "{}", v)
+            }
+            Value::String(ref v) => {
+                write!(f, "{}", v)
+            }
+            Value::Array(ref v) => write!(f, "{:?}", {
+                v.iter().map(|e| format!("{}, ", e)).collect::<String>()
+            }),
+            Value::Map(ref v) => write!(f, "{{ {} }}", {
+                v.iter()
+                    .map(|(k, v)| format!("{} => {}, ", k, v))
+                    .collect::<String>()
+            }),
+        }
+    }
+}
+
 /// Starting point to build your configs.
 #[derive(Debug)]
 pub struct Config();
@@ -96,7 +123,7 @@ impl Config {
 
     /// Set key and value programmatically.
     ///
-    /// Accepted `Value`: &str, i64, f64, bool, Vector<Value>,
+    /// Accepted `Value`: `&str`, `i64`, `f64`, `bool`, `Vector<Value>`, `HashMap<String, Value>`
     pub fn with_value<V>(mut self, key: &str, value: V) -> Self
     where
         V: Into<Value> + Debug,
