@@ -107,7 +107,7 @@ impl Display for Value {
 
 /// Starting point to build your configs.
 #[derive(Debug)]
-pub struct Config();
+pub struct Config {}
 
 impl Config {
     /// Initialized configs from environment variables.
