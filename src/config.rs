@@ -65,7 +65,7 @@ where
     V: Into<Value>,
 {
     fn from(value: Vec<V>) -> Self {
-        Self::Array(value.into_iter().map(|v| v.into()).collect::<Vec<Value>>())
+        Self::Array(value.into_iter().map(|v| v.into()).collect())
     }
 }
 
@@ -74,12 +74,7 @@ where
     V: Into<Value>,
 {
     fn from(value: HashMap<String, V>) -> Self {
-        Self::Map(
-            value
-                .into_iter()
-                .map(|(k, v)| (k, v.into()))
-                .collect::<HashMap<String, Value>>(),
-        )
+        Self::Map(value.into_iter().map(|(k, v)| (k, v.into())).collect())
     }
 }
 
