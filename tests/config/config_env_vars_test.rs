@@ -36,7 +36,6 @@ fn test_env_vars_success() {
     // assert
     assert!(&cfg.is_ok());
     let cfg = cfg.unwrap();
-    dbg!(&cfg);
     assert_eq!(cfg.string, "anu");
     assert_eq!(cfg.boolean, true);
     assert_eq!(cfg.int, 123);

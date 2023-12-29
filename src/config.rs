@@ -9,17 +9,35 @@ use std::{
 
 use serde::de::DeserializeOwned;
 
+use crate::config_impl::{self, ConfigImpl};
+
 /// Contains config errors constants/statics.
 pub mod errors {}
 
-/// Error type
-///
 #[derive(Debug)]
-pub enum ConfigError {}
+pub enum ConfigError {
+    ParseError(String),
+    FileError(String),
+    JsonError(String),
+    YamlError(String),
+    TomlError(String),
+    EnvError(String),
+    BuildError(String),
+}
 
 impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        match self {
+            ConfigError::ParseError(v) => writeln!(f, "[CONFIG][ERROR] Parsing error: {}", v),
+            ConfigError::FileError(v) => writeln!(f, "[CONFIG][ERROR] Parsing File error: {}", v),
+            ConfigError::JsonError(v) => writeln!(f, "[CONFIG][ERROR] Json parsing error: {}", v),
+            ConfigError::YamlError(v) => writeln!(f, "[CONFIG][ERROR] Yaml parsing error: {}", v),
+            ConfigError::TomlError(v) => writeln!(f, "[CONFIG][ERROR] Toml parsing error: {}", v),
+            ConfigError::EnvError(v) => writeln!(f, "[CONFIG][ERROR] Ini/Env parsing error: {}", v),
+            ConfigError::BuildError(v) => {
+                writeln!(f, "[CONFIG][ERROR] Failed building config: {}", v)
+            }
+        }
     }
 }
 
@@ -107,13 +125,17 @@ impl Display for Value {
 
 /// Starting point to build your configs.
 #[derive(Debug)]
-pub struct Config {}
+pub struct Config {
+    config_impl: config_impl::ConfigImpl,
+}
 
 impl Config {
     /// Initialized configs from environment variables.
     ///
     pub fn new() -> Self {
-        todo!()
+        Self {
+            config_impl: ConfigImpl::new(),
+        }
     }
 
     /// Set key and value programmatically.
@@ -161,6 +183,6 @@ impl Config {
     where
         T: DeserializeOwned + Debug,
     {
-        todo!()
+        self.config_impl.build::<T>()
     }
 }
