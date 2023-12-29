@@ -1,5 +1,3 @@
-// Public APIs
-
 use std::{
     collections::HashMap,
     error::Error,
@@ -9,91 +7,17 @@ use std::{
 
 use serde::de::DeserializeOwned;
 
-use crate::config_impl::{self, ConfigImpl};
-
-/// Contains config errors constants/statics.
-pub mod errors {}
-
-#[derive(Debug)]
-pub enum ConfigError {
-    ParseError(String),
-    FileError(String),
-    JsonError(String),
-    YamlError(String),
-    TomlError(String),
-    EnvError(String),
-    BuildError(String),
-}
-
-impl Display for ConfigError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ConfigError::ParseError(v) => writeln!(f, "[CONFIG][ERROR] Parsing error: {}", v),
-            ConfigError::FileError(v) => writeln!(f, "[CONFIG][ERROR] Parsing File error: {}", v),
-            ConfigError::JsonError(v) => writeln!(f, "[CONFIG][ERROR] Json parsing error: {}", v),
-            ConfigError::YamlError(v) => writeln!(f, "[CONFIG][ERROR] Yaml parsing error: {}", v),
-            ConfigError::TomlError(v) => writeln!(f, "[CONFIG][ERROR] Toml parsing error: {}", v),
-            ConfigError::EnvError(v) => writeln!(f, "[CONFIG][ERROR] Ini/Env parsing error: {}", v),
-            ConfigError::BuildError(v) => {
-                writeln!(f, "[CONFIG][ERROR] Failed building config: {}", v)
-            }
-        }
-    }
-}
-
-impl Error for ConfigError {}
+mod config_impl;
 
 /// Valid values for configs
 #[derive(Debug, PartialEq)]
-pub enum Value {
+pub(crate) enum Value {
     Bool(bool),
     Int64(i64),
     Float64(f64),
     String(String),
     Array(Vec<Value>),
     Map(HashMap<String, Value>),
-}
-
-impl From<bool> for Value {
-    fn from(value: bool) -> Self {
-        Self::Bool(value)
-    }
-}
-
-impl From<i64> for Value {
-    fn from(value: i64) -> Self {
-        Self::Int64(value)
-    }
-}
-
-impl From<f64> for Value {
-    fn from(value: f64) -> Self {
-        Self::Float64(value)
-    }
-}
-
-impl<'a> From<&'a str> for Value {
-    fn from(value: &'a str) -> Self {
-        Self::String(value.into())
-    }
-}
-
-impl<V> From<Vec<V>> for Value
-where
-    V: Into<Value>,
-{
-    fn from(value: Vec<V>) -> Self {
-        Self::Array(value.into_iter().map(|v| v.into()).collect())
-    }
-}
-
-impl<V> From<HashMap<String, V>> for Value
-where
-    V: Into<Value>,
-{
-    fn from(value: HashMap<String, V>) -> Self {
-        Self::Map(value.into_iter().map(|(k, v)| (k, v.into())).collect())
-    }
 }
 
 impl Display for Value {
@@ -123,6 +47,19 @@ impl Display for Value {
     }
 }
 
+#[derive(Debug)]
+pub struct ConfigError {
+    config_error_impl: config_impl::ConfigErrorImpl,
+}
+
+impl Display for ConfigError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "[CONFIG][ERROR] {}", self)
+    }
+}
+
+impl Error for ConfigError {}
+
 /// Starting point to build your configs.
 #[derive(Debug)]
 pub struct Config {
@@ -134,7 +71,7 @@ impl Config {
     ///
     pub fn new() -> Self {
         Self {
-            config_impl: ConfigImpl::new(),
+            config_impl: config_impl::ConfigImpl::new(),
         }
     }
 
@@ -183,6 +120,6 @@ impl Config {
     where
         T: DeserializeOwned + Debug,
     {
-        self.config_impl.build::<T>()
+        todo!()
     }
 }
