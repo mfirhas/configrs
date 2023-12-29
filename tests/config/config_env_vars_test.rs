@@ -5,7 +5,7 @@
 
 use serde::Deserialize;
 
-use crate::config::*;
+use configrs::config::*;
 use std::env;
 
 /// Load config from environment variables and success
