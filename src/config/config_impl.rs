@@ -97,6 +97,14 @@ impl From<serde_json::Error> for ConfigErrorImpl {
     }
 }
 
+impl From<ConfigErrorImpl> for super::ConfigError {
+    fn from(value: ConfigErrorImpl) -> Self {
+        Self {
+            config_error_impl: value,
+        }
+    }
+}
+
 #[derive(Debug, Default)]
 pub(super) struct ConfigImpl {
     env: serde_json::Value,

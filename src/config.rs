@@ -120,6 +120,6 @@ impl Config {
     where
         T: DeserializeOwned + Debug,
     {
-        todo!()
+        Ok(self.config_impl.build::<T>()?)
     }
 }
