@@ -50,11 +50,8 @@ impl Display for Value {
 
 #[cfg(test)]
 mod enum_value_display_tests {
-    use std::collections::HashMap;
-
-    use serde::de::Expected;
-
     use super::Value;
+    use std::collections::HashMap;
 
     #[test]
     fn test_value_bool() {
