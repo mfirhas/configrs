@@ -29,8 +29,9 @@ impl Display for Value {
             Value::Int64(v) => {
                 write!(f, "{}", v)
             }
+            // TODO: need to adjust precision.
             Value::Float64(v) => {
-                write!(f, "{}", v)
+                write!(f, "{:.2}", v)
             }
             Value::String(ref v) => {
                 write!(f, "{}", v)
@@ -44,6 +45,62 @@ impl Display for Value {
                     .collect::<String>()
             }),
         }
+    }
+}
+
+#[cfg(test)]
+mod enum_value_display_tests {
+    use std::collections::HashMap;
+
+    use serde::de::Expected;
+
+    use super::Value;
+
+    #[test]
+    fn test_value_bool() {
+        let input = Value::Bool(true);
+        let expected = "true";
+        assert_eq!(input.to_string(), expected);
+    }
+
+    #[test]
+    fn test_value_int64() {
+        let input = Value::Int64(123);
+        let expected = "123";
+        assert_eq!(input.to_string(), expected);
+    }
+
+    #[test]
+    fn test_value_float64() {
+        let input = Value::Float64(123.028);
+        let expected = "123.03";
+        assert_eq!(input.to_string(), expected);
+    }
+
+    #[test]
+    fn test_value_string() {
+        let input = Value::String("string".to_string());
+        let expected = "string";
+        assert_eq!(input.to_string(), expected);
+    }
+
+    #[test]
+    fn test_value_array() {
+        let input = Value::Array(vec![
+            Value::Int64(1),
+            Value::Int64(2),
+            Value::Int64(3),
+            Value::Int64(4),
+        ]);
+        let expected = "\"1, 2, 3, 4, \"";
+        assert_eq!(input.to_string(), expected);
+    }
+
+    #[test]
+    fn test_value_map() {
+        let input = Value::Map(HashMap::from([("1".to_string(), Value::Float64(123.457))]));
+        let expected = "{ 1 => 123.46,  }";
+        assert_eq!(input.to_string(), expected);
     }
 }
 
