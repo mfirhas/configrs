@@ -36,9 +36,11 @@ impl Display for Value {
             Value::String(ref v) => {
                 write!(f, "{}", v)
             }
+            // TODO: need to adjust trailing extras chars
             Value::Array(ref v) => write!(f, "{:?}", {
                 v.iter().map(|e| format!("{}, ", e)).collect::<String>()
             }),
+            // TODO: need to adjust trailing extras chars
             Value::Map(ref v) => write!(f, "{{ {} }}", {
                 v.iter()
                     .map(|(k, v)| format!("{} => {}, ", k, v))
