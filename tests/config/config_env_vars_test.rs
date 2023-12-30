@@ -54,9 +54,7 @@ fn test_env_vars_missing_field_failed() {
     // setup
     env::set_var("ENV_STRING", "anu");
     env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "123.0");
     env::set_var("ENV_BOOL", "true");
-    env::set_var("ENV_ARR", "123,234,345,456");
 
     // type
     #[derive(Debug, Deserialize)]
@@ -67,21 +65,21 @@ fn test_env_vars_missing_field_failed() {
         int: i64,
         #[serde(alias = "ENV_BOOL")]
         boolean: bool,
-        #[serde(alias = "ENV_ARR")]
-        arr: Vec<i32>,
+        #[serde(alias = "ENV_FLOAT")]
+        float: f64,
     }
 
     // run
     let cfg = Config::new().build::<Cfg>();
 
+    dbg!(&cfg);
     // assert
-    assert!(&cfg.is_ok());
-    let cfg = cfg.unwrap();
-    assert_eq!(cfg.string, "anu");
-    assert_eq!(cfg.boolean, false);
-    assert_eq!(cfg.int, 123);
-    // assert_eq!(cfg.float, 123.0);
-    assert_eq!(cfg.arr, vec![123, 234, 345, 456]);
+    assert!(&cfg.is_err());
+
+    // teardown
+    env::remove_var("ENV_STRING");
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_BOOL");
 }
 
 /// Load config with duplicated field in struct from the same env var value
