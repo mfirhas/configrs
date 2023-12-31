@@ -9,6 +9,8 @@ use configrs::config::*;
 use std::env;
 use std::sync::Mutex;
 
+// TEST_MUTEX will make sure tests are run synchronized, for env vars access and modify.
+// will be poisoned if one of the tests is panicked.
 static TEST_MUTEX: Mutex<()> = Mutex::new(());
 
 /// Load config from environment variables and success
