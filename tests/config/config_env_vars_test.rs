@@ -248,53 +248,52 @@ fn test_env_vars_default_success() {
     env::remove_var("ENV_BOOL");
 }
 
-// /// Load config with custom default values
-// #[test]
-//
-// fn test_env_vars_default_custom_success() {
-//     let _lock = TEST_MUTEX.lock().unwrap();
+/// Load config with custom default values
+#[test]
+fn test_env_vars_default_custom_success() {
+    let _lock = TEST_MUTEX.lock().unwrap();
 
-//     // setup
-//     // env::set_var("ENV_STRING", "anu"); // will use default instead
-//     env::set_var("ENV_INT", "123");
-//     // env::set_var("ENV_FLOAT", "1001.2");
-//     env::set_var("ENV_BOOL", "true");
-//     //  // will use default instead
+    // setup
+    // env::set_var("ENV_STRING", "anu"); // will use default instead
+    env::set_var("ENV_INT", "123");
+    // env::set_var("ENV_FLOAT", "1001.2");
+    env::set_var("ENV_BOOL", "true");
+    //  // will use default instead
 
-//     // type
-//     #[derive(Debug, Deserialize)]
-//     struct Cfg {
-//         #[serde(alias = "ENV_STRING", default)]
-//         string: String,
-//         #[serde(alias = "ENV_INT")]
-//         int: i64,
-//         #[serde(default = "default_float")]
-//         float: f64,
-//         #[serde(alias = "ENV_BOOL")]
-//         boolean: bool,
-//     }
-//     fn default_vector() -> Vec<i32> {
-//         vec![1, 2, 3, 4, 5]
-//     }
-//     const fn default_float() -> f64 {
-//         3.5
-//     }
+    // type
+    #[derive(Debug, Deserialize)]
+    struct Cfg {
+        #[serde(alias = "ENV_STRING", default)]
+        string: String,
+        #[serde(alias = "ENV_INT")]
+        int: i64,
+        #[serde(default = "default_float")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL")]
+        boolean: bool,
+    }
+    fn default_vector() -> Vec<i32> {
+        vec![1, 2, 3, 4, 5]
+    }
+    const fn default_float() -> f64 {
+        3.5
+    }
 
-//     // run
-//     let cfg = Config::new().build::<Cfg>();
+    // run
+    let cfg = Config::new().build::<Cfg>();
 
-//     // assert
-//     assert!(&cfg.is_ok());
-//     let cfg = cfg.unwrap();
-//     assert_eq!(cfg.string, "anu");
-//     assert_eq!(cfg.boolean, false);
-//     assert_eq!(cfg.int, 123);
-//     assert_eq!(cfg.float, 1001.2);
+    // assert
+    assert!(&cfg.is_ok());
+    let cfg = cfg.unwrap();
+    assert_eq!(cfg.string, "");
+    assert_eq!(cfg.boolean, true);
+    assert_eq!(cfg.int, 123);
+    assert_eq!(cfg.float, 3.5);
 
-//     // teardown
-//     env::remove_var("ENV_INT");
-//     env::remove_var("ENV_BOOL");
-// }
+    // teardown
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_BOOL");
+}
 
 // // nested---------------------------------------------------------------------------------------------
 
