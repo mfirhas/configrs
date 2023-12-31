@@ -65,7 +65,6 @@ fn test_env_vars_missing_field_failed() {
     env::set_var("ENV_INT", "123");
     env::set_var("ENV_BOOL", "true");
 
-    println!("float--> {:?}", env::var("ENV_FLOAT"));
     // type
     #[derive(Debug, Deserialize)]
     struct Cfg {
@@ -170,48 +169,42 @@ fn test_env_vars_case_sensitivity_fields_failed() {
     env::remove_var("ENV_BOOL");
 }
 
-// /// Load config with different letter case between serde's alias field and env vars key.
-// #[test]
-//
-// fn test_env_vars_case_sensitivity_alias_failed() {
-//     let _lock = TEST_MUTEX.lock().unwrap();
+/// Load config with different letter case between serde's alias field and env vars key.
+#[test]
+fn test_env_vars_case_sensitivity_alias_failed() {
+    let _lock = TEST_MUTEX.lock().unwrap();
 
-//     // setup
-//     env::set_var("ENV_STRING", "anu");
-//     env::set_var("ENV_INT", "123");
-//     env::set_var("ENV_FLOAT", "1001.2");
-//     env::set_var("ENV_BOOL", "true");
+    // setup
+    env::set_var("ENV_STRING", "anu");
+    env::set_var("ENV_INT", "123");
+    env::set_var("ENV_FLOAT", "1001.2");
+    env::set_var("ENV_BOOL", "true");
 
-//     // type
-//     #[derive(Debug, Deserialize)]
-//     struct Cfg {
-//         #[serde(alias = "ENV_STRiNG")]
-//         string: String,
-//         #[serde(alias = "ENV_INT")]
-//         int: i64,
-//         #[serde(alias = "ENV_FLOAT")]
-//         float: f64,
-//         #[serde(alias = "ENV_BOOL")]
-//         boolean: bool,
-//     }
+    // type
+    #[derive(Debug, Deserialize)]
+    struct Cfg {
+        #[serde(alias = "ENV_STRiNG")]
+        string: String,
+        #[serde(alias = "ENV_INT")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL")]
+        boolean: bool,
+    }
 
-//     // run
-//     let cfg = Config::new().build::<Cfg>();
+    // run
+    let cfg = Config::new().build::<Cfg>();
+    dbg!(&cfg);
+    // assert
+    assert!(&cfg.is_err());
 
-//     // assert
-//     assert!(&cfg.is_ok());
-//     let cfg = cfg.unwrap();
-//     assert_eq!(cfg.string, "anu");
-//     assert_eq!(cfg.boolean, false);
-//     assert_eq!(cfg.int, 123);
-//     assert_eq!(cfg.float, 1001.2);
-
-//     // teardown
-//     env::remove_var("ENV_STRING");
-//     env::remove_var("ENV_INT");
-//     env::remove_var("ENV_FLOAT");
-//     env::remove_var("ENV_BOOL");
-// }
+    // teardown
+    env::remove_var("ENV_STRING");
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_FLOAT");
+    env::remove_var("ENV_BOOL");
+}
 
 // /// Load config with some default values(Default trait) with serde default attribute.
 // #[test]
