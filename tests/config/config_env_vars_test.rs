@@ -272,9 +272,6 @@ fn test_env_vars_default_custom_success() {
         #[serde(alias = "ENV_BOOL")]
         boolean: bool,
     }
-    fn default_vector() -> Vec<i32> {
-        vec![1, 2, 3, 4, 5]
-    }
     const fn default_float() -> f64 {
         3.5
     }
