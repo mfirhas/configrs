@@ -103,7 +103,7 @@ mod enum_value_display_tests {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct ConfigError {
     config_error_impl: config_impl::ConfigErrorImpl,
 }

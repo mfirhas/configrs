@@ -52,7 +52,7 @@ where
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Eq)]
 pub(super) enum ConfigErrorImpl {
     ParseError(String),
     FileError(String),
