@@ -130,48 +130,43 @@ fn test_env_vars_duplicate_field_alias_failed() {
     env::remove_var("ENV_BOOL");
 }
 
-// /// Load config with different letter case between struct's field and env vars key.
-// #[test]
-//
-// fn test_env_vars_case_sensitivity_fields_failed() {
-//     let _lock = TEST_MUTEX.lock().unwrap();
+/// Load config with different letter case between struct's field and env vars key.
+#[test]
 
-//     // setup
-//     env::set_var("ENV_STRING", "anu");
-//     env::set_var("ENV_INT", "123");
-//     env::set_var("ENV_FLOAT", "1001.2");
-//     env::set_var("ENV_BOOL", "true");
+fn test_env_vars_case_sensitivity_fields_failed() {
+    let _lock = TEST_MUTEX.lock().unwrap();
 
-//     // type
-//     #[derive(Debug, Deserialize)]
-//     struct Cfg {
-//         // #[serde(alias = "ENV_STRING")]
-//         eNv_sTrInG: String, // env var: ENV_STRING
-//         #[serde(alias = "ENV_INT")]
-//         int: i64,
-//         #[serde(alias = "ENV_FLOAT")]
-//         float: f64,
-//         #[serde(alias = "ENV_BOOL")]
-//         boolean: bool,
-//     }
+    // setup
+    env::set_var("ENV_STRING", "anu");
+    env::set_var("ENV_INT", "123");
+    env::set_var("ENV_FLOAT", "1001.2");
+    env::set_var("ENV_BOOL", "true");
 
-//     // run
-//     let cfg = Config::new().build::<Cfg>();
+    // type
+    #[derive(Debug, Deserialize)]
+    struct Cfg {
+        // #[serde(alias = "ENV_STRING")]
+        ENVSTRING: String, // env var: ENV_STRING, error because case must be exact, including non-letter
+        #[serde(alias = "ENV_INT")]
+        int: i64,
+        #[serde(alias = "ENV_FLOAT")]
+        float: f64,
+        #[serde(alias = "ENV_BOOL")]
+        boolean: bool,
+    }
 
-//     // assert
-//     assert!(&cfg.is_ok());
-//     let cfg = cfg.unwrap();
-//     // assert_eq!(cfg.string, "anu");
-//     assert_eq!(cfg.boolean, false);
-//     assert_eq!(cfg.int, 123);
-//     assert_eq!(cfg.float, 1001.2);
+    // run
+    let cfg = Config::new().build::<Cfg>();
+    dbg!(&cfg);
+    // assert
+    assert!(&cfg.is_err());
 
-//     // teardown
-//     env::remove_var("ENV_STRING");
-//     env::remove_var("ENV_INT");
-//     env::remove_var("ENV_FLOAT");
-//     env::remove_var("ENV_BOOL");
-// }
+    // teardown
+    env::remove_var("ENV_STRING");
+    env::remove_var("ENV_INT");
+    env::remove_var("ENV_FLOAT");
+    env::remove_var("ENV_BOOL");
+}
 
 // /// Load config with different letter case between serde's alias field and env vars key.
 // #[test]
