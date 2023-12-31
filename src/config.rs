@@ -29,9 +29,8 @@ impl Display for Value {
             Value::Int64(v) => {
                 write!(f, "{}", v)
             }
-            // TODO: need to adjust precision.
             Value::Float64(v) => {
-                write!(f, "{:.2}", v)
+                write!(f, "{:?}", v)
             }
             Value::String(ref v) => {
                 write!(f, "{}", v)
@@ -72,7 +71,7 @@ mod enum_value_display_tests {
     #[test]
     fn test_value_float64() {
         let input = Value::Float64(123.028);
-        let expected = "123.03";
+        let expected = "123.028";
         assert_eq!(input.to_string(), expected);
     }
 
