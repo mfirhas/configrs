@@ -1,8 +1,4 @@
-use std::fs::File;
-use std::str::FromStr;
-
 use serde::de::DeserializeOwned;
-use serde::Deserialize;
 use serde_json::json;
 use std::collections::HashMap;
 use std::env;
@@ -150,7 +146,7 @@ impl Display for ConfigErrorImpl {
         match self {
             ConfigErrorImpl::ParseError(v) => writeln!(f, "Parsing error: {}", v),
             ConfigErrorImpl::FileError(v) => {
-                writeln!(f, "Parsing File error: {}", v)
+                writeln!(f, "File error: {}", v)
             }
             ConfigErrorImpl::JsonError(v) => {
                 writeln!(f, "Json parsing error: {}", v)
@@ -216,6 +212,61 @@ impl ConfigImpl {
         }
     }
 
+    pub fn with_env(mut self, file_path: impl AsRef<Path>) -> Self {
+        // check error
+        if self.err.is_some() {
+            return self;
+        }
+
+        // read file
+        let env_file_string = Self::load_file_to_string(file_path);
+        if env_file_string.is_err() {
+            self.err = Some(env_file_string.unwrap_err());
+            return self;
+        }
+        let env_file_string = env_file_string.unwrap();
+
+        // parse into Ini
+        let env_values = match ini::Ini::load_from_str(&env_file_string) {
+            Ok(v) => v,
+            Err(e) => {
+                self.err = Some(ConfigErrorImpl::EnvError(e.to_string()));
+                return self;
+            }
+        };
+
+        // read
+        for (sec, prop) in env_values {
+            if let Some(sec) = sec {
+                let mut sec_map = serde_json::Map::<String, serde_json::Value>::new();
+                for (k, v) in prop.iter() {
+                    if let Err(e) = self.is_key_exist(k) {
+                        self.err = Some(e);
+                        return self;
+                    }
+                    sec_map.insert(k.to_string(), Self::parse_str(&v));
+                }
+                self.env
+                    .as_object_mut()
+                    .unwrap_or(&mut serde_json::Map::new())
+                    .insert(sec, serde_json::Value::Object(sec_map));
+            } else {
+                for (k, v) in prop.iter() {
+                    if let Err(e) = self.is_key_exist(k) {
+                        self.err = Some(e);
+                        return self;
+                    }
+                    self.env
+                        .as_object_mut()
+                        .unwrap_or(&mut serde_json::Map::new())
+                        .insert(k.to_string(), Self::parse_str(&v));
+                }
+            }
+        }
+
+        self
+    }
+
     /// Build configs into T
     pub fn build<T>(self) -> Result<T, ConfigErrorImpl>
     where
@@ -229,9 +280,38 @@ impl ConfigImpl {
         Ok(ret)
     }
 
+    fn load_file_to_string(file_path: impl AsRef<Path>) -> Result<String, ConfigErrorImpl> {
+        match std::fs::read_to_string(file_path) {
+            Ok(v) => Ok(v),
+            Err(e) => Err(ConfigErrorImpl::FileError(e.to_string())),
+        }
+    }
+
+    fn is_env_map(&self) -> Result<bool, ConfigErrorImpl> {
+        if !self.env.is_object() {
+            return Err(ConfigErrorImpl::ParseError(
+                "env vars parsing is not in form of key-val object".to_string(),
+            ));
+        }
+        Ok(true)
+    }
+
+    fn is_key_exist(&self, key: &str) -> Result<(), ConfigErrorImpl> {
+        self.is_env_map()?;
+        if let Some(obj) = self.env.as_object() {
+            if !self.overwrite && obj.get(key).is_some() {
+                return Err(ConfigErrorImpl::JsonError(format!(
+                    "config with key: `{}` already exist",
+                    key
+                )));
+            }
+        }
+        Ok(())
+    }
+
     fn parse_str(v: &str) -> serde_json::Value {
         if let Ok(parsed) = v.parse::<bool>() {
-            return serde_json::Value::Bool(parsed);
+            return json!(parsed);
         }
         if let Ok(parsed) = v.parse::<i64>() {
             return json!(parsed);

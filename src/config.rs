@@ -27,7 +27,7 @@ pub struct ConfigError {
 
 impl Display for ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "[CONFIG][ERROR] {}", self)
+        writeln!(f, "[CONFIG][ERROR] {}", self.config_error_impl)
     }
 }
 
@@ -70,7 +70,9 @@ impl Config {
 
     /// Add configs from .env file
     pub fn with_env(mut self, file_path: impl AsRef<Path>) -> Self {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_env(file_path),
+        }
     }
 
     /// Add configs from .json file
