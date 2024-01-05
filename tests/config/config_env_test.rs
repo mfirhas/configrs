@@ -64,37 +64,22 @@ fn test_env_success() {
 
     let cfg = Config::new().with_env(file_path).build::<Env>();
     dbg!(&cfg);
+
     assert!(cfg.is_ok());
     let cfg = cfg.unwrap();
+
     assert_eq!(cfg.string, "string");
     assert_eq!(cfg.integer, 123);
     assert_eq!(cfg.float, 123.0);
     assert_eq!(cfg.boolean, true);
-    // assert_eq!(cfg.arr, vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]);
     assert_eq!(cfg.sub_env.sub_env_string, "string");
     assert_eq!(cfg.sub_env.sub_env_integer, 123);
     assert_eq!(cfg.sub_env.sub_env_float, 123.0);
     assert_eq!(cfg.sub_env.sub_env_boolean, true);
-    // assert_eq!(
-    //     cfg.sub_env.sub_env_arr,
-    //     vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]
-    // );
-    assert_eq!(cfg.sub_env.sub_sub_env.sub_sub_env_string, "string");
-    assert_eq!(cfg.sub_env.sub_sub_env.sub_sub_env_integer, 123);
-    assert_eq!(cfg.sub_env.sub_sub_env.sub_sub_env_float, 123.0);
-    assert_eq!(cfg.sub_env.sub_sub_env.sub_sub_env_boolean, true);
-    // assert_eq!(
-    //     cfg.sub_env.sub_sub_env.sub_sub_env_arr,
-    //     vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]
-    // );
     assert_eq!(cfg.sub_env_2.sub_env_2_string, "string");
     assert_eq!(cfg.sub_env_2.sub_env_2_integer, 123);
     assert_eq!(cfg.sub_env_2.sub_env_2_float, 123.0);
     assert_eq!(cfg.sub_env_2.sub_env_2_boolean, true);
-    // assert_eq!(
-    //     cfg.sub_env_2.sub_env_2_arr,
-    //     vec!["anu", "nganu", "lskmdf", "lwkef", "lkemrg"]
-    // );
 }
 
 // there is missing env key in env file
