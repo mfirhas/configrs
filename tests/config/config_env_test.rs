@@ -85,7 +85,7 @@ fn test_env_success() {
 // there is missing env key in env file
 #[test]
 fn test_env_missing_key() {
-    let file_path = "../tests/data/env/test_missing_field.env";
+    let file_path = "./tests/data/env/test_missing_field.env";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "ENV_STRING")]
@@ -96,8 +96,6 @@ fn test_env_missing_key() {
         pub float: f64,
         #[serde(alias = "ENV_BOOLEAN")]
         pub boolean: bool,
-        #[serde(alias = "ENV_ARR")]
-        pub arr: Vec<String>,
         #[serde(alias = "SUB_ENV")]
         pub sub_env: SubEnv,
         #[serde(alias = "SUB_ENV_2")]
@@ -114,8 +112,6 @@ fn test_env_missing_key() {
         pub sub_env_float: f64,
         #[serde(alias = "SUB_ENV_BOOLEAN")]
         pub sub_env_boolean: bool,
-        #[serde(alias = "SUB_ENV_ARR")]
-        pub sub_env_arr: Vec<String>,
         #[serde(alias = "SUB_SUB_ENV")]
         pub sub_sub_env: SubSubEnv,
     }
@@ -130,8 +126,6 @@ fn test_env_missing_key() {
         pub sub_sub_env_float: f64,
         #[serde(alias = "SUB_SUB_ENV_BOOLEAN")]
         pub sub_sub_env_boolean: bool,
-        #[serde(alias = "SUB_SUB_ENV_ARR")]
-        pub sub_sub_env_arr: Vec<String>,
     }
 
     #[derive(Debug, Serialize, Deserialize)]
@@ -144,13 +138,12 @@ fn test_env_missing_key() {
         pub sub_env_2_float: f64,
         #[serde(alias = "SUB_ENV_2_BOOLEAN")]
         pub sub_env_2_boolean: bool,
-        #[serde(alias = "SUB_ENV_2_ARR")]
-        pub sub_env_2_arr: Vec<String>,
     }
 
     let cfg = Config::new().with_env(file_path).build::<Env>();
     assert!(cfg.is_err());
     let cfg = cfg.unwrap_err();
+    dbg!(&cfg);
 }
 
 // load with default(trait) value for non-existing env in env file and success
