@@ -220,9 +220,7 @@ impl ConfigImpl {
 
         let env_map = env_file_reader::read_file(file_path);
         if env_map.is_err() {
-            self.err = Some(ConfigErrorImpl::EnvError(
-                "failed reading .env file".to_string(),
-            ));
+            self.err = Some(ConfigErrorImpl::EnvError(env_map.unwrap_err().to_string()));
             return self;
         }
         let env_map = env_map.unwrap();
