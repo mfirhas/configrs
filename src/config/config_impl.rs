@@ -218,54 +218,81 @@ impl ConfigImpl {
             return self;
         }
 
-        // read file
-        let env_file_string = Self::load_file_to_string(file_path);
-        if env_file_string.is_err() {
-            self.err = Some(env_file_string.unwrap_err());
+        let env_map = env_file_reader::read_file(file_path);
+        if env_map.is_err() {
+            self.err = Some(ConfigErrorImpl::EnvError(
+                "failed reading .env file".to_string(),
+            ));
             return self;
         }
-        let env_file_string = env_file_string.unwrap();
+        let env_map = env_map.unwrap();
 
-        // parse into Ini
-        let env_values = match ini::Ini::load_from_str(&env_file_string) {
-            Ok(v) => v,
-            Err(e) => {
-                self.err = Some(ConfigErrorImpl::EnvError(e.to_string()));
-                return self;
-            }
-        };
-
-        // read
-        for (sec, prop) in env_values {
-            if let Some(sec) = sec {
-                let mut sec_map = serde_json::Map::<String, serde_json::Value>::new();
-                for (k, v) in prop.iter() {
-                    if let Err(e) = self.is_key_exist(k) {
-                        self.err = Some(e);
-                        return self;
-                    }
-                    sec_map.insert(k.to_string(), Self::parse_str(&v));
-                }
-                self.env
-                    .as_object_mut()
-                    .unwrap_or(&mut serde_json::Map::new())
-                    .insert(sec, serde_json::Value::Object(sec_map));
-            } else {
-                for (k, v) in prop.iter() {
-                    if let Err(e) = self.is_key_exist(k) {
-                        self.err = Some(e);
-                        return self;
-                    }
-                    self.env
-                        .as_object_mut()
-                        .unwrap_or(&mut serde_json::Map::new())
-                        .insert(k.to_string(), Self::parse_str(&v));
-                }
-            }
+        for (key, val) in env_map {
+            let value = Self::parse_str(&val);
+            self.env
+                .as_object_mut()
+                .unwrap_or(&mut serde_json::Map::new())
+                .insert(key, value);
         }
 
         self
     }
+
+    // support for .ini later.
+    // pub fn with_ini(mut self, file_path: impl AsRef<Path>) -> Self {
+    //     // check error
+    //     if self.err.is_some() {
+    //         return self;
+    //     }
+
+    //     // read file
+    //     let env_file_string = Self::load_file_to_string(file_path);
+    //     if env_file_string.is_err() {
+    //         self.err = Some(env_file_string.unwrap_err());
+    //         return self;
+    //     }
+    //     let env_file_string = env_file_string.unwrap();
+
+    //     // parse into Ini
+    //     let env_values = match ini::Ini::load_from_str(&env_file_string) {
+    //         Ok(v) => v,
+    //         Err(e) => {
+    //             self.err = Some(ConfigErrorImpl::EnvError(e.to_string()));
+    //             return self;
+    //         }
+    //     };
+
+    //     // read
+    //     for (sec, prop) in env_values {
+    //         if let Some(sec) = sec {
+    //             let mut sec_map = serde_json::Map::<String, serde_json::Value>::new();
+    //             for (k, v) in prop.iter() {
+    //                 if let Err(e) = self.is_key_exist(k) {
+    //                     self.err = Some(e);
+    //                     return self;
+    //                 }
+    //                 sec_map.insert(k.to_string(), Self::parse_str(&v));
+    //             }
+    //             self.env
+    //                 .as_object_mut()
+    //                 .unwrap_or(&mut serde_json::Map::new())
+    //                 .insert(sec, serde_json::Value::Object(sec_map));
+    //         } else {
+    //             for (k, v) in prop.iter() {
+    //                 if let Err(e) = self.is_key_exist(k) {
+    //                     self.err = Some(e);
+    //                     return self;
+    //                 }
+    //                 self.env
+    //                     .as_object_mut()
+    //                     .unwrap_or(&mut serde_json::Map::new())
+    //                     .insert(k.to_string(), Self::parse_str(&v));
+    //             }
+    //         }
+    //     }
+    //
+    //     self
+    // }
 
     /// Build configs into T
     pub fn build<T>(self) -> Result<T, ConfigErrorImpl>
