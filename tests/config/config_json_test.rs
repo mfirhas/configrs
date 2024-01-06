@@ -7,7 +7,7 @@ use configrs::config::*;
 // load all and success
 #[test]
 fn test_json_success() {
-    let file_path = "../tests/data/json/test.json";
+    let file_path = "./tests/data/json/test.json";
     #[derive(Debug, Serialize, Deserialize)]
     pub struct Env {
         #[serde(alias = "envString")]
@@ -71,6 +71,7 @@ fn test_json_success() {
     }
 
     let cfg = Config::new().with_json(file_path).build::<Env>();
+    dbg!(&cfg);
     assert!(cfg.is_ok());
     let cfg = cfg.unwrap();
     assert_eq!(cfg.string, "string");
