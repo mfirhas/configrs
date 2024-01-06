@@ -1,3 +1,7 @@
+// TODO:
+// - Refactor codes that use `.unwrap`
+// - Refactor procedural error handling to be more "FP"
+
 use serde::de::DeserializeOwned;
 use serde_json::json;
 use std::collections::HashMap;

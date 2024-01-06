@@ -1,3 +1,5 @@
+// TODO: Document codes.
+
 use std::{
     collections::HashMap,
     error::Error,
