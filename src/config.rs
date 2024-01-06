@@ -77,7 +77,9 @@ impl Config {
 
     /// Add configs from .json file
     pub fn with_json(mut self, file_path: impl AsRef<Path>) -> Self {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_json(file_path),
+        }
     }
 
     /// Add configs from .toml file

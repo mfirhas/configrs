@@ -236,6 +236,37 @@ impl ConfigImpl {
         self
     }
 
+    pub fn with_json(mut self, file_path: impl AsRef<Path>) -> Self {
+        // check error
+        if self.err.is_some() {
+            return self;
+        }
+
+        let file = std::fs::File::open(file_path);
+        if file.is_err() {
+            self.err = Some(ConfigErrorImpl::FileError(file.unwrap_err().to_string()));
+            return self;
+        }
+        let reader = std::io::BufReader::new(file.unwrap());
+        let json_data = serde_json::from_reader::<_, serde_json::Value>(reader);
+        if json_data.is_err() {
+            self.err = Some(ConfigErrorImpl::JsonError(
+                json_data.unwrap_err().to_string(),
+            ));
+            return self;
+        }
+        let mut json_data = json_data.unwrap();
+        self.env
+            .as_object_mut()
+            .unwrap_or(&mut serde_json::Map::new())
+            .append(
+                json_data
+                    .as_object_mut()
+                    .unwrap_or(&mut serde_json::Map::new()),
+            );
+        self
+    }
+
     // support for .ini later.
     // pub fn with_ini(mut self, file_path: impl AsRef<Path>) -> Self {
     //     // check error
