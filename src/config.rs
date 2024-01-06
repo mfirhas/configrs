@@ -92,7 +92,9 @@ impl Config {
 
     /// Add configs from .yaml file
     pub fn with_yaml(mut self, file_path: impl AsRef<Path>) -> Self {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_yaml(file_path),
+        }
     }
 
     /// Build configs into T

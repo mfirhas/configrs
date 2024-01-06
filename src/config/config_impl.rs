@@ -304,6 +304,40 @@ impl ConfigImpl {
         ret
     }
 
+    pub fn with_yaml(mut self, file_path: impl AsRef<Path>) -> Self {
+        // check error
+        if self.err.is_some() {
+            return self;
+        }
+
+        let ret = Self::load_file_to_string(file_path).map_or_else(
+            |err| Self {
+                err: Some(err),
+                ..Default::default()
+            },
+            |val| {
+                let ret = serde_yaml::from_str::<serde_json::Value>(&val).map_or_else(
+                    |err| Self {
+                        err: Some(ConfigErrorImpl::YamlError(err.to_string())),
+                        ..Default::default()
+                    },
+                    |val| {
+                        let default_json_map = serde_json::Map::new();
+                        let map_json = val.as_object().unwrap_or(&default_json_map);
+                        self.env
+                            .as_object_mut()
+                            .unwrap_or(&mut serde_json::Map::new())
+                            .extend(map_json.to_owned().into_iter());
+                        self
+                    },
+                );
+                ret
+            },
+        );
+
+        ret
+    }
+
     // support for .ini later.
     // pub fn with_ini(mut self, file_path: impl AsRef<Path>) -> Self {
     //     // check error
