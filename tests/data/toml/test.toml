@@ -11,14 +11,14 @@ sub_env_float = 123
 sub_env_boolean = true
 sub_env_arr = [ "anu", "nganu", "lskmdf", "lwkef", "lkemrg" ]
 
-  [sub_env.sub_Sub_env]
+  [sub_env.sub_sub_env]
   sub_sub_env_string = "string"
   sub_sub_env_integer = 123
   sub_sub_env_float = 123
   sub_sub_env_boolean = true
   sub_sub_env_arr = [ "anu", "nganu", "lskmdf", "lwkef", "lkemrg" ]
 
-[sub_env2]
+[sub_env_2]
 sub_env_2_string = "string"
 sub_env_2_integer = 123
 sub_env_2_float = 123
