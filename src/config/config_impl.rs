@@ -31,6 +31,8 @@ impl Display for super::Value {
                     .map(|(k, v)| format!("{} => {}, ", k, v))
                     .collect::<String>()
             }),
+            // TODO: refactor
+            super::Value::None => write!(f, "<NULL>"),
         }
     }
 }
@@ -265,6 +267,41 @@ impl ConfigImpl {
                     .unwrap_or(&mut serde_json::Map::new()),
             );
         self
+    }
+
+    pub fn with_toml(mut self, file_path: impl AsRef<Path>) -> Self {
+        // check error
+        if self.err.is_some() {
+            return self;
+        }
+
+        let ret = Self::load_file_to_string(file_path).map_or_else(
+            move |a| Self {
+                err: Some(a),
+                ..Default::default()
+            },
+            move |s| {
+                let ret = toml::from_str::<toml::Value>(&s).map_or_else(
+                    move |err| Self {
+                        err: Some(ConfigErrorImpl::TomlError(err.to_string())),
+                        ..Default::default()
+                    },
+                    move |d| {
+                        let jsoned = json!(d);
+                        let default_json_map = serde_json::Map::new();
+                        let map_json = jsoned.as_object().unwrap_or(&default_json_map);
+                        self.env
+                            .as_object_mut()
+                            .unwrap_or(&mut serde_json::Map::new())
+                            .extend(map_json.to_owned().into_iter());
+                        self
+                    },
+                );
+                ret
+            },
+        );
+
+        ret
     }
 
     // support for .ini later.

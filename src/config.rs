@@ -5,12 +5,12 @@ use std::{
     path::Path,
 };
 
-use serde::de::DeserializeOwned;
+use serde::{de::DeserializeOwned, Serialize};
 
 mod config_impl;
 
 /// Valid values for configs
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Serialize)]
 pub(crate) enum Value {
     Bool(bool),
     Int64(i64),
@@ -18,6 +18,7 @@ pub(crate) enum Value {
     String(String),
     Array(Vec<Value>),
     Map(HashMap<String, Value>),
+    None,
 }
 
 #[derive(Debug, PartialEq, Eq)]
@@ -84,7 +85,9 @@ impl Config {
 
     /// Add configs from .toml file
     pub fn with_toml(mut self, file_path: impl AsRef<Path>) -> Self {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_toml(file_path),
+        }
     }
 
     /// Add configs from .yaml file
