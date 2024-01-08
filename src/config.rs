@@ -28,14 +28,6 @@ pub struct ConfigError {
     config_error_impl: config_impl::ConfigErrorImpl,
 }
 
-impl Display for ConfigError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "[CONFIG][ERROR] {}", self.config_error_impl)
-    }
-}
-
-impl Error for ConfigError {}
-
 /// Starting point to build your configs.
 #[derive(Debug)]
 pub struct Config {
