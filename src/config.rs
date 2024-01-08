@@ -45,12 +45,20 @@ impl Config {
 
     /// Set key and value programmatically.
     ///
-    /// Accepted `Value`: `&str`, `i64`, `f64`, `bool`, `Vector<Value>`, `HashMap<String, Value>`
+    /// Accepted `Value`:
+    /// - `&str`/`String`,
+    /// - `i64`,
+    /// - `f64`,
+    /// - `bool`,
+    /// - `Vector<Value>`,
+    /// - `HashMap<String, Value>`
     pub fn with_value<V>(mut self, key: &str, value: V) -> Self
     where
         V: Into<Value> + Debug,
     {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_value(key, value),
+        }
     }
 
     /// Take configs only with this prefix from all sources.

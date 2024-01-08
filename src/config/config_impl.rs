@@ -10,13 +10,13 @@ use std::error::Error;
 use std::fmt::{Debug, Display};
 use std::path::Path;
 
-impl Display for ConfigError {
+impl Display for super::ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "[CONFIG][ERROR] {}", self.config_error_impl)
     }
 }
 
-impl Error for ConfigError {}
+impl Error for super::ConfigError {}
 
 impl Display for super::Value {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -126,6 +126,12 @@ impl<'a> From<&'a str> for super::Value {
     }
 }
 
+impl From<String> for super::Value {
+    fn from(value: String) -> Self {
+        Self::String(value)
+    }
+}
+
 impl<V> From<Vec<V>> for super::Value
 where
     V: Into<super::Value>,
@@ -141,6 +147,30 @@ where
 {
     fn from(value: HashMap<String, V>) -> Self {
         Self::Map(value.into_iter().map(|(k, v)| (k, v.into())).collect())
+    }
+}
+
+impl From<super::Value> for serde_json::Value {
+    fn from(value: super::Value) -> Self {
+        match value {
+            super::Value::Bool(v) => serde_json::Value::Bool(v),
+            super::Value::Int64(v) => serde_json::Value::Number(serde_json::Number::from(v)),
+            super::Value::Float64(v) => serde_json::Value::Number(
+                serde_json::Number::from_f64(v).unwrap(), // TODO: remove unwrap.
+            ),
+            super::Value::String(v) => serde_json::Value::String(v),
+            super::Value::Array(v) => serde_json::Value::Array(
+                v.into_iter()
+                    .map(|v| v.into())
+                    .collect::<Vec<serde_json::Value>>(),
+            ),
+            super::Value::Map(v) => serde_json::Value::Object(
+                v.into_iter()
+                    .map(|(k, v)| (k, v.into()))
+                    .collect::<serde_json::Map<_, serde_json::Value>>(),
+            ),
+            super::Value::None => serde_json::Value::Null,
+        }
     }
 }
 
@@ -172,7 +202,7 @@ impl Display for ConfigErrorImpl {
                 writeln!(f, "Toml parsing error: {}", v)
             }
             ConfigErrorImpl::EnvError(v) => {
-                writeln!(f, "Ini/Env parsing error: {}", v)
+                writeln!(f, "Env parsing error: {}", v)
             }
             ConfigErrorImpl::BuildError(v) => {
                 writeln!(f, "Failed building config: {}", v)
@@ -224,6 +254,23 @@ impl ConfigImpl {
             env,
             ..Default::default()
         }
+    }
+
+    pub fn with_value<V>(mut self, key: &str, value: V) -> Self
+    where
+        V: Into<super::Value> + Debug,
+    {
+        // check error
+        if self.err.is_some() {
+            return self;
+        }
+
+        self.env
+            .as_object_mut()
+            .unwrap_or(&mut serde_json::Map::new())
+            .insert(key.into(), serde_json::Value::from(value.into()));
+
+        self
     }
 
     pub fn with_env(mut self, file_path: impl AsRef<Path>) -> Self {
