@@ -70,6 +70,8 @@ name = "configrs"
 version = "0.0.0"
 dependencies = [
  "env-file-reader",
+ "lazy_static",
+ "once_cell",
  "serde",
  "serde_json",
  "serde_yaml",
@@ -252,6 +254,12 @@ checksum = "d3c48237b9604c5a4702de6b824e02006c3214327564636aef27c1028a8fa0ed"
 dependencies = [
  "regex",
 ]
+
+[[package]]
+name = "lazy_static"
+version = "1.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e2abad23fbc42b3700f2f279844dc832adb2b2eb069b2df918f455c4e18cc646"
 
 [[package]]
 name = "libc"
