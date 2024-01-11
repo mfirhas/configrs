@@ -29,7 +29,7 @@ pub struct ConfigError {
 }
 
 /// Starting point to build your configs.
-#[derive(Debug)]
+#[derive(Clone)]
 pub struct Config {
     config_impl: config_impl::ConfigImpl,
 }
