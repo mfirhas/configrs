@@ -174,7 +174,7 @@ impl From<super::Value> for serde_json::Value {
     }
 }
 
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum ConfigErrorImpl {
     ParseError(String),
     FileError(String),
@@ -227,7 +227,7 @@ impl From<ConfigErrorImpl> for super::ConfigError {
     }
 }
 
-#[derive(Debug, Default)]
+#[derive(Clone, Default)]
 pub(super) struct ConfigImpl {
     env: serde_json::Value,
     prefix: &'static str,
