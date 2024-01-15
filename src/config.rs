@@ -13,7 +13,7 @@ mod config_impl;
 
 /// Valid values for configs
 #[derive(Debug, PartialEq, Serialize)]
-pub(crate) enum Value {
+pub enum Value {
     Bool(bool),
     Int64(i64),
     Float64(f64),
