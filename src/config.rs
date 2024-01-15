@@ -9,7 +9,9 @@ use std::{
 
 use serde::{de::DeserializeOwned, Serialize};
 
+mod config_error_impl;
 mod config_impl;
+mod value_impl;
 
 /// Valid values for configs
 #[derive(Debug, PartialEq, Serialize)]
@@ -25,7 +27,7 @@ pub enum Value {
 
 #[derive(Debug, PartialEq, Eq)]
 pub struct ConfigError {
-    config_error_impl: config_impl::ConfigErrorImpl,
+    config_error_impl: config_error_impl::ConfigErrorImpl,
 }
 
 /// Starting point to build your configs.

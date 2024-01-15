@@ -10,238 +10,12 @@ use std::error::Error;
 use std::fmt::{Debug, Display};
 use std::path::Path;
 
-impl Display for super::ConfigError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "[CONFIG][ERROR] {}", self.config_error_impl)
-    }
-}
-
-impl Error for super::ConfigError {}
-
-impl Display for super::Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match *self {
-            super::Value::Bool(v) => {
-                write!(f, "{}", v)
-            }
-            super::Value::Int64(v) => {
-                write!(f, "{}", v)
-            }
-            super::Value::Float64(v) => {
-                write!(f, "{:?}", v)
-            }
-            super::Value::String(ref v) => {
-                write!(f, "{}", v)
-            }
-            // TODO: need to adjust trailing extras chars
-            super::Value::Array(ref v) => write!(f, "{:?}", {
-                v.iter().map(|e| format!("{}, ", e)).collect::<String>()
-            }),
-            // TODO: need to adjust trailing extras chars
-            super::Value::Map(ref v) => write!(f, "{{ {} }}", {
-                v.iter()
-                    .map(|(k, v)| format!("{} => {}, ", k, v))
-                    .collect::<String>()
-            }),
-            // TODO: refactor
-            super::Value::None => write!(f, "<NULL>"),
-        }
-    }
-}
-
-#[cfg(test)]
-mod enum_value_display_tests {
-    use super::super::Value;
-    use std::collections::HashMap;
-
-    #[test]
-    fn test_value_bool() {
-        let input = Value::Bool(true);
-        let expected = "true";
-        assert_eq!(input.to_string(), expected);
-    }
-
-    #[test]
-    fn test_value_int64() {
-        let input = Value::Int64(123);
-        let expected = "123";
-        assert_eq!(input.to_string(), expected);
-    }
-
-    #[test]
-    fn test_value_float64() {
-        let input = Value::Float64(123.028);
-        let expected = "123.028";
-        assert_eq!(input.to_string(), expected);
-    }
-
-    #[test]
-    fn test_value_string() {
-        let input = Value::String("string".to_string());
-        let expected = "string";
-        assert_eq!(input.to_string(), expected);
-    }
-
-    #[test]
-    fn test_value_array() {
-        let input = Value::Array(vec![
-            Value::Int64(1),
-            Value::Int64(2),
-            Value::Int64(3),
-            Value::Int64(4),
-        ]);
-        let expected = "\"1, 2, 3, 4, \"";
-        assert_eq!(input.to_string(), expected);
-    }
-
-    #[test]
-    fn test_value_map() {
-        let input = Value::Map(HashMap::from([("1".to_string(), Value::Float64(123.457))]));
-        let expected = "{ 1 => 123.457,  }";
-        assert_eq!(input.to_string(), expected);
-    }
-}
-
-impl From<bool> for super::Value {
-    fn from(value: bool) -> Self {
-        Self::Bool(value)
-    }
-}
-
-impl From<i64> for super::Value {
-    fn from(value: i64) -> Self {
-        Self::Int64(value)
-    }
-}
-
-impl From<f64> for super::Value {
-    fn from(value: f64) -> Self {
-        Self::Float64(value)
-    }
-}
-
-impl<'a> From<&'a str> for super::Value {
-    fn from(value: &'a str) -> Self {
-        Self::String(value.into())
-    }
-}
-
-impl From<String> for super::Value {
-    fn from(value: String) -> Self {
-        Self::String(value)
-    }
-}
-
-impl<V> From<Vec<V>> for super::Value
-where
-    V: Into<super::Value>,
-{
-    fn from(value: Vec<V>) -> Self {
-        Self::Array(value.into_iter().map(|v| v.into()).collect())
-    }
-}
-
-impl<V> From<&[V]> for super::Value
-where
-    V: Into<super::Value> + Clone,
-{
-    fn from(value: &[V]) -> Self {
-        Self::Array(value.to_vec().into_iter().map(|v| v.into()).collect())
-    }
-}
-
-impl<V> From<HashMap<String, V>> for super::Value
-where
-    V: Into<super::Value>,
-{
-    fn from(value: HashMap<String, V>) -> Self {
-        Self::Map(value.into_iter().map(|(k, v)| (k, v.into())).collect())
-    }
-}
-
-impl From<super::Value> for serde_json::Value {
-    fn from(value: super::Value) -> Self {
-        match value {
-            super::Value::Bool(v) => serde_json::Value::Bool(v),
-            super::Value::Int64(v) => serde_json::Value::Number(serde_json::Number::from(v)),
-            super::Value::Float64(v) => serde_json::Value::Number(
-                serde_json::Number::from_f64(v).unwrap(), // TODO: remove unwrap.
-            ),
-            super::Value::String(v) => serde_json::Value::String(v),
-            super::Value::Array(v) => serde_json::Value::Array(
-                v.into_iter()
-                    .map(|v| v.into())
-                    .collect::<Vec<serde_json::Value>>(),
-            ),
-            super::Value::Map(v) => serde_json::Value::Object(
-                v.into_iter()
-                    .map(|(k, v)| (k, v.into()))
-                    .collect::<serde_json::Map<_, serde_json::Value>>(),
-            ),
-            super::Value::None => serde_json::Value::Null,
-        }
-    }
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub(super) enum ConfigErrorImpl {
-    ParseError(String),
-    FileError(String),
-    JsonError(String),
-    YamlError(String),
-    TomlError(String),
-    EnvError(String),
-    BuildError(String),
-}
-
-impl Display for ConfigErrorImpl {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            ConfigErrorImpl::ParseError(v) => writeln!(f, "Parsing error: {}", v),
-            ConfigErrorImpl::FileError(v) => {
-                writeln!(f, "File error: {}", v)
-            }
-            ConfigErrorImpl::JsonError(v) => {
-                writeln!(f, "Json parsing error: {}", v)
-            }
-            ConfigErrorImpl::YamlError(v) => {
-                writeln!(f, "Yaml parsing error: {}", v)
-            }
-            ConfigErrorImpl::TomlError(v) => {
-                writeln!(f, "Toml parsing error: {}", v)
-            }
-            ConfigErrorImpl::EnvError(v) => {
-                writeln!(f, "Env parsing error: {}", v)
-            }
-            ConfigErrorImpl::BuildError(v) => {
-                writeln!(f, "Failed building config: {}", v)
-            }
-        }
-    }
-}
-
-impl Error for ConfigErrorImpl {}
-
-impl From<serde_json::Error> for ConfigErrorImpl {
-    fn from(value: serde_json::Error) -> Self {
-        Self::BuildError(value.to_string())
-    }
-}
-
-impl From<ConfigErrorImpl> for super::ConfigError {
-    fn from(value: ConfigErrorImpl) -> Self {
-        Self {
-            config_error_impl: value,
-        }
-    }
-}
-
 #[derive(Clone, Default)]
 pub(super) struct ConfigImpl {
     env: serde_json::Value,
     prefix: &'static str,
     overwrite: bool,
-    err: Option<ConfigErrorImpl>,
+    err: Option<super::config_error_impl::ConfigErrorImpl>,
 }
 
 impl ConfigImpl {
@@ -253,9 +27,9 @@ impl ConfigImpl {
         let env = serde_json::json!(json_map);
         if !env.is_object() {
             return Self {
-                err: Some(ConfigErrorImpl::ParseError(String::from(
-                    "env not passed as key=val format.",
-                ))),
+                err: Some(super::config_error_impl::ConfigErrorImpl::ParseError(
+                    String::from("env not passed as key=val format."),
+                )),
                 ..Default::default()
             };
         }
@@ -290,7 +64,9 @@ impl ConfigImpl {
 
         let env_map = env_file_reader::read_file(file_path);
         if env_map.is_err() {
-            self.err = Some(ConfigErrorImpl::EnvError(env_map.unwrap_err().to_string()));
+            self.err = Some(super::config_error_impl::ConfigErrorImpl::EnvError(
+                env_map.unwrap_err().to_string(),
+            ));
             return self;
         }
         let env_map = env_map.unwrap();
@@ -314,13 +90,15 @@ impl ConfigImpl {
 
         let file = std::fs::File::open(file_path);
         if file.is_err() {
-            self.err = Some(ConfigErrorImpl::FileError(file.unwrap_err().to_string()));
+            self.err = Some(super::config_error_impl::ConfigErrorImpl::FileError(
+                file.unwrap_err().to_string(),
+            ));
             return self;
         }
         let reader = std::io::BufReader::new(file.unwrap());
         let json_data = serde_json::from_reader::<_, serde_json::Value>(reader);
         if json_data.is_err() {
-            self.err = Some(ConfigErrorImpl::JsonError(
+            self.err = Some(super::config_error_impl::ConfigErrorImpl::JsonError(
                 json_data.unwrap_err().to_string(),
             ));
             return self;
@@ -351,7 +129,9 @@ impl ConfigImpl {
             move |s| {
                 let ret = toml::from_str::<toml::Value>(&s).map_or_else(
                     move |err| Self {
-                        err: Some(ConfigErrorImpl::TomlError(err.to_string())),
+                        err: Some(super::config_error_impl::ConfigErrorImpl::TomlError(
+                            err.to_string(),
+                        )),
                         ..Default::default()
                     },
                     move |d| {
@@ -386,7 +166,9 @@ impl ConfigImpl {
             |val| {
                 let ret = serde_yaml::from_str::<serde_json::Value>(&val).map_or_else(
                     |err| Self {
-                        err: Some(ConfigErrorImpl::YamlError(err.to_string())),
+                        err: Some(super::config_error_impl::ConfigErrorImpl::YamlError(
+                            err.to_string(),
+                        )),
                         ..Default::default()
                     },
                     |val| {
@@ -463,7 +245,7 @@ impl ConfigImpl {
     // }
 
     /// Build configs into T
-    pub fn build<T>(self) -> Result<T, ConfigErrorImpl>
+    pub fn build<T>(self) -> Result<T, super::config_error_impl::ConfigErrorImpl>
     where
         T: DeserializeOwned + Debug,
     {
@@ -475,30 +257,33 @@ impl ConfigImpl {
         Ok(ret)
     }
 
-    fn load_file_to_string(file_path: impl AsRef<Path>) -> Result<String, ConfigErrorImpl> {
+    fn load_file_to_string(
+        file_path: impl AsRef<Path>,
+    ) -> Result<String, super::config_error_impl::ConfigErrorImpl> {
         match std::fs::read_to_string(file_path) {
             Ok(v) => Ok(v),
-            Err(e) => Err(ConfigErrorImpl::FileError(e.to_string())),
+            Err(e) => Err(super::config_error_impl::ConfigErrorImpl::FileError(
+                e.to_string(),
+            )),
         }
     }
 
-    fn is_env_map(&self) -> Result<bool, ConfigErrorImpl> {
+    fn is_env_map(&self) -> Result<bool, super::config_error_impl::ConfigErrorImpl> {
         if !self.env.is_object() {
-            return Err(ConfigErrorImpl::ParseError(
+            return Err(super::config_error_impl::ConfigErrorImpl::ParseError(
                 "env vars parsing is not in form of key-val object".to_string(),
             ));
         }
         Ok(true)
     }
 
-    fn is_key_exist(&self, key: &str) -> Result<(), ConfigErrorImpl> {
+    fn is_key_exist(&self, key: &str) -> Result<(), super::config_error_impl::ConfigErrorImpl> {
         self.is_env_map()?;
         if let Some(obj) = self.env.as_object() {
             if !self.overwrite && obj.get(key).is_some() {
-                return Err(ConfigErrorImpl::JsonError(format!(
-                    "config with key: `{}` already exist",
-                    key
-                )));
+                return Err(super::config_error_impl::ConfigErrorImpl::JsonError(
+                    format!("config with key: `{}` already exist", key),
+                ));
             }
         }
         Ok(())
