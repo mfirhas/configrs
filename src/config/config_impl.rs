@@ -141,6 +141,15 @@ where
     }
 }
 
+impl<V> From<&[V]> for super::Value
+where
+    V: Into<super::Value> + Clone,
+{
+    fn from(value: &[V]) -> Self {
+        Self::Array(value.to_vec().into_iter().map(|v| v.into()).collect())
+    }
+}
+
 impl<V> From<HashMap<String, V>> for super::Value
 where
     V: Into<super::Value>,
