@@ -177,3 +177,32 @@ fn test_map_conversion() {
 
     assert_eq!(c, val_b);
 }
+
+// from Value into serde_json::Value
+// test the conversion
+#[test]
+fn test_value_serde_conversion() {
+    let bool = Value::Bool(true);
+    let string = Value::String("string".to_string());
+    let int64 = Value::Int64(123);
+    let float64 = Value::Float64(23.30);
+    let arr = Value::Array(vec![
+        Value::Int64(1),
+        Value::Int64(2),
+        Value::Int64(3),
+        Value::Int64(4),
+    ]);
+    let map = Value::Map(HashMap::from([
+        ("1".to_string(), Value::Int64(1)),
+        ("2".to_string(), Value::Float64(2.0)),
+        ("3".to_string(), Value::String("4".to_string())),
+        ("4".to_string(), Value::Bool(true)),
+    ]));
+
+    let serde_bool: serde_json::Value = bool.into();
+    let serde_string: serde_json::Value = string.into();
+    let serde_number_int64: serde_json::Value = int64.into();
+    let serde_number_float64: serde_json::Value = float64.into();
+    let serde_arr: serde_json::Value = arr.into();
+    let serde_map: serde_json::Value = map.into();
+}
