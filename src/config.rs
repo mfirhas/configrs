@@ -62,7 +62,7 @@ impl Config {
     }
 
     /// Take configs only with this prefix from all sources.
-    pub fn with_prefix(mut self, prefix: &str) -> Self {
+    pub fn with_env_prefix(mut self, prefix: &str) -> Self {
         todo!()
     }
 
