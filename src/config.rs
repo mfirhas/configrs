@@ -14,7 +14,7 @@ mod config_impl;
 mod value_impl;
 
 /// Valid values for configs
-#[derive(Debug, PartialEq, Serialize)]
+#[derive(Debug, Clone, PartialEq, Serialize)]
 pub enum Value {
     Bool(bool),
     Int64(i64),
