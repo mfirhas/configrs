@@ -6,7 +6,7 @@ impl Display for super::ConfigError {
         writeln!(
             f,
             "{} {}",
-            super::CONFIG_ERROR_PREFIX,
+            super::ConfigError::CONFIG_ERROR_PREFIX,
             self.config_error_impl
         )
     }

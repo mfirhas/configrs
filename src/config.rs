@@ -25,10 +25,12 @@ pub enum Value {
     None,
 }
 
-static CONFIG_ERROR_PREFIX: &str = "[CONFIG][ERROR]";
 #[derive(Debug, PartialEq, Eq)]
 pub struct ConfigError {
     config_error_impl: config_error_impl::ConfigErrorImpl,
+}
+impl ConfigError {
+    pub(crate) const CONFIG_ERROR_PREFIX: &str = "[CONFIG][ERROR]";
 }
 
 /// Starting point to build your configs.
