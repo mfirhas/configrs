@@ -116,3 +116,24 @@ impl From<super::Value> for serde_json::Value {
         }
     }
 }
+
+// from serde_json::Value to Value
+impl From<serde_json::Value> for super::Value {
+    fn from(value: serde_json::Value) -> Self {
+        match value {
+            serde_json::Value::Array(v) => Self::Array(v.into_iter().map(|v| v.into()).collect()),
+            serde_json::Value::Bool(v) => Self::Bool(v),
+            serde_json::Value::Null => Self::None,
+            serde_json::Value::Number(v) => {
+                if v.is_f64() {
+                    return Self::Float64(v.as_f64().unwrap()); // TODO: refactor this unwrap, for now guarded by if statement
+                }
+                Self::Int64(v.as_i64().unwrap_or(0))
+            }
+            serde_json::Value::Object(v) => {
+                Self::Map(v.into_iter().map(|(k, v)| (k, v.into())).collect())
+            }
+            serde_json::Value::String(v) => Self::String(v),
+        }
+    }
+}
