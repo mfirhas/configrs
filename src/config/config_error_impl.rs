@@ -3,10 +3,24 @@ use std::{error::Error, fmt::Display};
 // ConfigError traits implementations
 impl Display for super::ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "[CONFIG][ERROR] {}", self.config_error_impl)
+        writeln!(
+            f,
+            "{} {}",
+            super::CONFIG_ERROR_PREFIX,
+            self.config_error_impl
+        )
     }
 }
 impl Error for super::ConfigError {}
+
+// ConfigError factory from ConfigErrorImpl
+impl From<ConfigErrorImpl> for super::ConfigError {
+    fn from(value: ConfigErrorImpl) -> Self {
+        Self {
+            config_error_impl: value,
+        }
+    }
+}
 
 // ConfigErrorImpl
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -51,14 +65,5 @@ impl Error for ConfigErrorImpl {}
 impl From<serde_json::Error> for ConfigErrorImpl {
     fn from(value: serde_json::Error) -> Self {
         Self::BuildError(value.to_string())
-    }
-}
-
-// ConfigError factory from ConfigErrorImpl
-impl From<ConfigErrorImpl> for super::ConfigError {
-    fn from(value: ConfigErrorImpl) -> Self {
-        Self {
-            config_error_impl: value,
-        }
     }
 }

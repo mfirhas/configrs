@@ -25,6 +25,7 @@ pub enum Value {
     None,
 }
 
+static CONFIG_ERROR_PREFIX: &str = "[CONFIG][ERROR]";
 #[derive(Debug, PartialEq, Eq)]
 pub struct ConfigError {
     config_error_impl: config_error_impl::ConfigErrorImpl,
