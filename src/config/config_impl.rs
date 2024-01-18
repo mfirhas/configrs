@@ -12,7 +12,7 @@ use std::path::Path;
 
 #[derive(Clone, Default)]
 pub(super) struct ConfigImpl {
-    env: serde_json::Value,
+    env: serde_json::Map<String, serde_json::Value>,
     prefix: &'static str,
     overwrite: bool,
     err: Option<super::config_error_impl::ConfigErrorImpl>,
@@ -33,6 +33,10 @@ impl ConfigImpl {
                 ..Default::default()
             };
         }
+        let env = env
+            .as_object()
+            .unwrap_or(&serde_json::Map::new())
+            .to_owned();
         Self {
             env,
             ..Default::default()
@@ -49,8 +53,6 @@ impl ConfigImpl {
         }
 
         self.env
-            .as_object_mut()
-            .unwrap_or(&mut serde_json::Map::new())
             .insert(key.into(), serde_json::Value::from(value.into()));
 
         self
@@ -73,10 +75,7 @@ impl ConfigImpl {
 
         for (key, val) in env_map {
             let value = Self::parse_str(&val);
-            self.env
-                .as_object_mut()
-                .unwrap_or(&mut serde_json::Map::new())
-                .insert(key, value);
+            self.env.insert(key, value);
         }
 
         self
@@ -103,15 +102,12 @@ impl ConfigImpl {
             ));
             return self;
         }
-        let mut json_data = json_data.unwrap();
-        self.env
-            .as_object_mut()
-            .unwrap_or(&mut serde_json::Map::new())
-            .append(
-                json_data
-                    .as_object_mut()
-                    .unwrap_or(&mut serde_json::Map::new()),
-            );
+        let json_data = json_data
+            .unwrap()
+            .as_object()
+            .unwrap_or(&serde_json::Map::new())
+            .to_owned();
+        self.env.extend(json_data.into_iter());
         self
     }
 
@@ -138,10 +134,7 @@ impl ConfigImpl {
                         let jsoned = json!(d);
                         let default_json_map = serde_json::Map::new();
                         let map_json = jsoned.as_object().unwrap_or(&default_json_map);
-                        self.env
-                            .as_object_mut()
-                            .unwrap_or(&mut serde_json::Map::new())
-                            .extend(map_json.to_owned().into_iter());
+                        self.env.extend(map_json.to_owned().into_iter());
                         self
                     },
                 );
@@ -174,10 +167,7 @@ impl ConfigImpl {
                     |val| {
                         let default_json_map = serde_json::Map::new();
                         let map_json = val.as_object().unwrap_or(&default_json_map);
-                        self.env
-                            .as_object_mut()
-                            .unwrap_or(&mut serde_json::Map::new())
-                            .extend(map_json.to_owned().into_iter());
+                        self.env.extend(map_json.to_owned().into_iter());
                         self
                     },
                 );
@@ -224,8 +214,8 @@ impl ConfigImpl {
     //                 sec_map.insert(k.to_string(), Self::parse_str(&v));
     //             }
     //             self.env
-    //                 .as_object_mut()
-    //                 .unwrap_or(&mut serde_json::Map::new())
+    //
+    //
     //                 .insert(sec, serde_json::Value::Object(sec_map));
     //         } else {
     //             for (k, v) in prop.iter() {
@@ -234,8 +224,8 @@ impl ConfigImpl {
     //                     return self;
     //                 }
     //                 self.env
-    //                     .as_object_mut()
-    //                     .unwrap_or(&mut serde_json::Map::new())
+    //
+    //
     //                     .insert(k.to_string(), Self::parse_str(&v));
     //             }
     //         }
@@ -253,7 +243,7 @@ impl ConfigImpl {
             return Err(self.err.unwrap());
         }
 
-        let ret = serde_json::from_value::<T>(self.env)?;
+        let ret = serde_json::from_value::<T>(serde_json::Value::Object(self.env))?;
         Ok(ret)
     }
 
@@ -266,27 +256,6 @@ impl ConfigImpl {
                 e.to_string(),
             )),
         }
-    }
-
-    fn is_env_map(&self) -> Result<bool, super::config_error_impl::ConfigErrorImpl> {
-        if !self.env.is_object() {
-            return Err(super::config_error_impl::ConfigErrorImpl::ParseError(
-                "env vars parsing is not in form of key-val object".to_string(),
-            ));
-        }
-        Ok(true)
-    }
-
-    fn is_key_exist(&self, key: &str) -> Result<(), super::config_error_impl::ConfigErrorImpl> {
-        self.is_env_map()?;
-        if let Some(obj) = self.env.as_object() {
-            if !self.overwrite && obj.get(key).is_some() {
-                return Err(super::config_error_impl::ConfigErrorImpl::JsonError(
-                    format!("config with key: `{}` already exist", key),
-                ));
-            }
-        }
-        Ok(())
     }
 
     fn parse_str(v: &str) -> serde_json::Value {
