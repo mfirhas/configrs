@@ -13,3 +13,5 @@ mod config_yaml_test;
 mod config_value_test;
 
 mod config_mixes_test;
+
+mod config_prefix_env_vars_test;
