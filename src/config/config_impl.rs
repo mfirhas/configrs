@@ -55,17 +55,19 @@ impl ConfigImpl {
         }
 
         // check duplicate if not overwrite
-        if !self.overwrite {
-            let exist = Self::is_exist(&self.env, key);
-            if exist.is_err() {
-                self.err = Some(exist.unwrap_err());
-                return self;
-            }
+        if !self.overwrite && Self::is_exist(&self.env, key) {
+            self.err = Some(ConfigErrorImpl::DuplicateKey);
+            return self;
         }
 
         self.env
             .insert(key.into(), serde_json::Value::from(value.into()));
 
+        self
+    }
+
+    pub fn with_overwrite(mut self) -> Self {
+        self.overwrite = true;
         self
     }
 
@@ -86,12 +88,9 @@ impl ConfigImpl {
 
         for (key, val) in env_map {
             // check duplicate if not overwrite
-            if !self.overwrite {
-                let exist = Self::is_exist(&self.env, &key);
-                if exist.is_err() {
-                    self.err = Some(exist.unwrap_err());
-                    return self;
-                }
+            if !self.overwrite && Self::is_exist(&self.env, &key) {
+                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                return self;
             }
             let value = Self::parse_str(&val);
             self.env.insert(key, value);
@@ -135,12 +134,9 @@ impl ConfigImpl {
                     .to_owned();
                 for (key, val) in obj {
                     // check duplicate if not overwrite
-                    if !self.overwrite {
-                        let exist = Self::is_exist(&self.env, &key);
-                        if exist.is_err() {
-                            self.err = Some(exist.unwrap_err());
-                            return self;
-                        }
+                    if !self.overwrite && Self::is_exist(&self.env, &key) {
+                        self.err = Some(ConfigErrorImpl::DuplicateKey);
+                        return self;
                     }
                     self.env.insert(key, val);
                 }
@@ -175,12 +171,9 @@ impl ConfigImpl {
                         let map_json = jsoned.as_object().unwrap_or(&default_json_map).to_owned();
                         for (key, val) in map_json {
                             // check duplicate if not overwrite
-                            if !self.overwrite {
-                                let exist = Self::is_exist(&self.env, &key);
-                                if exist.is_err() {
-                                    self.err = Some(exist.unwrap_err());
-                                    return self;
-                                }
+                            if !self.overwrite && Self::is_exist(&self.env, &key) {
+                                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                                return self;
                             }
                             self.env.insert(key, val);
                         }
@@ -216,16 +209,13 @@ impl ConfigImpl {
                     |val| {
                         let default_json_map = serde_json::Map::new();
                         let map_json = val.as_object().unwrap_or(&default_json_map).to_owned();
-                        for (k, v) in map_json {
+                        for (key, val) in map_json {
                             // check duplicate if not overwrite
-                            if !self.overwrite {
-                                let exist = Self::is_exist(&self.env, &k);
-                                if exist.is_err() {
-                                    self.err = Some(exist.unwrap_err());
-                                    return self;
-                                }
+                            if !self.overwrite && Self::is_exist(&self.env, &key) {
+                                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                                return self;
                             }
-                            self.env.insert(k, v);
+                            self.env.insert(key, val);
                         }
                         self
                     },
@@ -306,14 +296,11 @@ impl ConfigImpl {
         Ok(ret)
     }
 
-    fn is_exist(
-        map: &serde_json::Map<String, serde_json::Value>,
-        key: &str,
-    ) -> Result<(), ConfigErrorImpl> {
+    fn is_exist(map: &serde_json::Map<String, serde_json::Value>, key: &str) -> bool {
         if map.contains_key(key) {
-            return Err(ConfigErrorImpl::DuplicateKey);
+            return true;
         }
-        Ok(())
+        false
     }
 
     fn load_file_to_string(

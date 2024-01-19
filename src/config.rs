@@ -73,7 +73,9 @@ impl Config {
 
     /// Overwrite previous already existing configs keys
     pub fn with_overwrite(mut self) -> Self {
-        todo!()
+        Self {
+            config_impl: self.config_impl.with_overwrite(),
+        }
     }
 
     /// Add configs from .env file
