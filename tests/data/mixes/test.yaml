@@ -1,0 +1,43 @@
+yamlEnvString: string
+yamlEnvInteger: 123
+yamlEnvFloat: 123
+yamlEnvBoolean: true
+yamlEnvArr:
+  - anu
+  - nganu
+  - lskmdf
+  - lwkef
+  - lkemrg
+yamlSubEnv:
+  yamlSubEnvString: string
+  yamlSubEnvInteger: 123
+  yamlSubEnvFloat: 123
+  yamlSubEnvBoolean: true
+  yamlSubEnvArr:
+    - anu
+    - nganu
+    - lskmdf
+    - lwkef
+    - lkemrg
+  yamlSubSubEnv:
+    yamlSubSubEnvString: string
+    yamlSubSubEnvInteger: 123
+    yamlSubSubEnvFloat: 123
+    yamlSubSubEnvBoolean: true
+    yamlSubSubEnvArr:
+      - anu
+      - nganu
+      - lskmdf
+      - lwkef
+      - lkemrg
+yamlSubEnv2:
+  yamlSubEnv2String: string
+  yamlSubEnv2Integer: 123
+  yamlSubEnv2Float: 123
+  yamlSubEnv2Boolean: true
+  yamlSubEnv2Arr:
+    - anu
+    - nganu
+    - lskmdf
+    - lwkef
+    - lkemrg
