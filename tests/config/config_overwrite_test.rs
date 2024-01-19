@@ -8,7 +8,7 @@ static TEST_MUTEX: Mutex<()> = Mutex::new(());
 
 // test by mixing all sources of configs
 #[test]
-fn test_mix_all() {
+fn test_overwrite_env_env_vars() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     env::set_var("ENV_STRING", "asd");

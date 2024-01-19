@@ -26,6 +26,7 @@ impl From<ConfigErrorImpl> for super::ConfigError {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum ConfigErrorImpl {
     ParseError(String),
+    DuplicateKey,
     FileError(String),
     JsonError(String),
     YamlError(String),
@@ -38,6 +39,9 @@ impl Display for ConfigErrorImpl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ConfigErrorImpl::ParseError(v) => writeln!(f, "Parsing error: {}", v),
+            ConfigErrorImpl::DuplicateKey => {
+                writeln!(f, "overwrite is not active, so no key duplication allowed")
+            }
             ConfigErrorImpl::FileError(v) => {
                 writeln!(f, "File error: {}", v)
             }
