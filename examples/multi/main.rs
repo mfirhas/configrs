@@ -2,6 +2,7 @@ use std::any::Any;
 
 mod init;
 
+// run with `TEST_ENV=donat TEST_ENV_2=1000 cargo run --example multi`
 fn main() {
     let cfg = init::init_config();
     println!("init_config: {:?}", cfg);
