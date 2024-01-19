@@ -10,6 +10,8 @@ use std::error::Error;
 use std::fmt::{Debug, Display};
 use std::path::Path;
 
+use super::config_error_impl::ConfigErrorImpl;
+
 #[derive(Clone, Default)]
 pub(super) struct ConfigImpl {
     env: serde_json::Map<String, serde_json::Value>,
@@ -102,13 +104,23 @@ impl ConfigImpl {
             ));
             return self;
         }
-        let json_data = json_data
-            .unwrap()
-            .as_object()
-            .unwrap_or(&serde_json::Map::new())
-            .to_owned();
-        self.env.extend(json_data.into_iter());
-        self
+        let ret = json_data.map_or_else(
+            |err| {
+                return Self {
+                    err: Some(ConfigErrorImpl::JsonError(err.to_string())),
+                    ..Default::default()
+                };
+            },
+            |json_val| {
+                let obj = json_val
+                    .as_object()
+                    .unwrap_or(&serde_json::Map::default())
+                    .to_owned();
+                self.env.extend(obj.into_iter());
+                return self;
+            },
+        );
+        ret
     }
 
     pub fn with_toml(mut self, file_path: impl AsRef<Path>) -> Self {
