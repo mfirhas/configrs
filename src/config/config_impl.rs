@@ -56,7 +56,7 @@ impl ConfigImpl {
 
         // check duplicate if not overwrite
         if !self.overwrite && Self::is_exist(&self.env, key) {
-            self.err = Some(ConfigErrorImpl::DuplicateKey);
+            self.err = Some(ConfigErrorImpl::DuplicateKey(key.to_string()));
             return self;
         }
 
@@ -89,7 +89,7 @@ impl ConfigImpl {
         for (key, val) in env_map {
             // check duplicate if not overwrite
             if !self.overwrite && Self::is_exist(&self.env, &key) {
-                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                 return self;
             }
             let value = Self::parse_str(&val);
@@ -135,7 +135,7 @@ impl ConfigImpl {
                 for (key, val) in obj {
                     // check duplicate if not overwrite
                     if !self.overwrite && Self::is_exist(&self.env, &key) {
-                        self.err = Some(ConfigErrorImpl::DuplicateKey);
+                        self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                         return self;
                     }
                     self.env.insert(key, val);
@@ -172,7 +172,7 @@ impl ConfigImpl {
                         for (key, val) in map_json {
                             // check duplicate if not overwrite
                             if !self.overwrite && Self::is_exist(&self.env, &key) {
-                                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                                self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                                 return self;
                             }
                             self.env.insert(key, val);
@@ -212,7 +212,7 @@ impl ConfigImpl {
                         for (key, val) in map_json {
                             // check duplicate if not overwrite
                             if !self.overwrite && Self::is_exist(&self.env, &key) {
-                                self.err = Some(ConfigErrorImpl::DuplicateKey);
+                                self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                                 return self;
                             }
                             self.env.insert(key, val);
