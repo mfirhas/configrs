@@ -14,7 +14,8 @@ use super::config_error_impl::ConfigErrorImpl;
 
 #[derive(Clone, Default)]
 pub(super) struct ConfigImpl {
-    env: serde_json::Map<String, serde_json::Value>,
+    env: serde_json::Map<String, serde_json::Value>, // for env vars, .env, values
+    files_env: serde_json::Map<String, serde_json::Value>, // for json, yaml, toml
     prefix: &'static str,
     overwrite: bool,
     err: Option<super::config_error_impl::ConfigErrorImpl>,
@@ -41,6 +42,7 @@ impl ConfigImpl {
             .to_owned();
         Self {
             env,
+            files_env: serde_json::Map::new(),
             ..Default::default()
         }
     }
@@ -68,6 +70,11 @@ impl ConfigImpl {
 
     pub fn with_overwrite(mut self) -> Self {
         self.overwrite = true;
+        self
+    }
+
+    pub fn with_env_prefix(mut self, prefix: &'static str) -> Self {
+        self.prefix = prefix;
         self
     }
 
@@ -138,7 +145,7 @@ impl ConfigImpl {
                         self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                         return self;
                     }
-                    self.env.insert(key, val);
+                    self.files_env.insert(key, val);
                 }
                 self
             },
@@ -175,7 +182,7 @@ impl ConfigImpl {
                                 self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                                 return self;
                             }
-                            self.env.insert(key, val);
+                            self.files_env.insert(key, val);
                         }
                         self
                     },
@@ -215,7 +222,7 @@ impl ConfigImpl {
                                 self.err = Some(ConfigErrorImpl::DuplicateKey(key));
                                 return self;
                             }
-                            self.env.insert(key, val);
+                            self.files_env.insert(key, val);
                         }
                         self
                     },
@@ -284,7 +291,7 @@ impl ConfigImpl {
     // }
 
     /// Build configs into T
-    pub fn build<T>(self) -> Result<T, super::config_error_impl::ConfigErrorImpl>
+    pub fn build<T>(mut self) -> Result<T, super::config_error_impl::ConfigErrorImpl>
     where
         T: DeserializeOwned + Debug,
     {
@@ -292,7 +299,16 @@ impl ConfigImpl {
             return Err(self.err.unwrap());
         }
 
-        let ret = serde_json::from_value::<T>(serde_json::Value::Object(self.env))?;
+        let mut config_vals = if !self.prefix.is_empty() {
+            self.filter_env_prefix()
+        } else {
+            self
+        };
+
+        let config_vals = config_vals.merge_env_files_env();
+
+        let ret = serde_json::from_value::<T>(serde_json::Value::Object(config_vals))?;
+
         Ok(ret)
     }
 
@@ -301,6 +317,21 @@ impl ConfigImpl {
             return true;
         }
         false
+    }
+
+    fn filter_env_prefix(mut self) -> Self {
+        let filtered_env = self
+            .env
+            .into_iter()
+            .filter(|(key, _)| key.starts_with(self.prefix))
+            .collect::<serde_json::Map<String, serde_json::Value>>();
+        self.env = filtered_env;
+        self
+    }
+
+    fn merge_env_files_env(mut self) -> serde_json::Map<String, serde_json::Value> {
+        self.env.extend(self.files_env.into_iter());
+        self.env
     }
 
     fn load_file_to_string(

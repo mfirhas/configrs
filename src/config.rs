@@ -67,8 +67,10 @@ impl Config {
     }
 
     /// Take configs only with this prefix from all sources.
-    pub fn with_env_prefix(mut self, prefix: &str) -> Self {
-        todo!()
+    pub fn with_env_prefix(mut self, prefix: &'static str) -> Self {
+        Self {
+            config_impl: self.config_impl.with_env_prefix(prefix),
+        }
     }
 
     /// Overwrite previous already existing configs keys
