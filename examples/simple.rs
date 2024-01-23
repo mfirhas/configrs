@@ -117,6 +117,19 @@ fn main() {
         "config lazy once string: {:?}",
         CONFIG_LAZY_ONCE.get().unwrap().string
     );
+
+    #[derive(Debug, Deserialize, Serialize)]
+    struct Configs {
+        #[serde(alias = "ENV_KEY")]
+        key: i64,
+        #[serde(alias = "ENV_KEY_2")]
+        key_2: String,
+    }
+
+    let cfg = Config::new();
+    let cfg_with_env = cfg.with_env("./examples/multi/.env");
+    let config_build = cfg_with_env.build::<Configs>();
+    dbg!(&config_build);
 }
 
 fn take_lazy_static(cfg: &'static Cfg) {
