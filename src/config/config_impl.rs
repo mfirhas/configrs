@@ -6,8 +6,7 @@ use serde::de::DeserializeOwned;
 use serde_json::json;
 use std::collections::HashMap;
 use std::env;
-use std::error::Error;
-use std::fmt::{Debug, Display};
+use std::fmt::Debug;
 use std::path::Path;
 
 use super::config_error_impl::ConfigErrorImpl;

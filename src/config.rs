@@ -1,11 +1,4 @@
-// TODO: Document codes.
-
-use std::{
-    collections::HashMap,
-    error::Error,
-    fmt::{Debug, Display},
-    path::Path,
-};
+use std::{collections::HashMap, fmt::Debug, path::Path};
 
 use serde::{de::DeserializeOwned, Serialize};
 
@@ -25,15 +18,16 @@ pub enum Value {
     None,
 }
 
+/// Error for related to configs build.
 #[derive(Debug, PartialEq, Eq)]
 pub struct ConfigError {
     config_error_impl: config_error_impl::ConfigErrorImpl,
 }
 impl ConfigError {
-    pub(crate) const CONFIG_ERROR_PREFIX: &str = "[CONFIG][ERROR]";
+    pub(crate) const CONFIG_ERROR_PREFIX: &'static str = "[CONFIG][ERROR]";
 }
 
-/// Starting point to build your configs.
+/// Configuration builder to build your configs.
 #[derive(Clone)]
 pub struct Config {
     config_impl: config_impl::ConfigImpl,
@@ -42,6 +36,7 @@ pub struct Config {
 impl Config {
     /// Initialized configs from environment variables.
     ///
+    /// Eagerly executed
     pub fn new() -> Self {
         Self {
             config_impl: config_impl::ConfigImpl::new(),
@@ -52,11 +47,13 @@ impl Config {
     ///
     /// Accepted `Value`:
     /// - `&str`/`String`,
-    /// - `i64`,
-    /// - `f64`,
+    /// - `i32`/i64`,
+    /// - `f32`/f64`,
     /// - `bool`,
     /// - `Vector<Value>`,
     /// - `HashMap<String, Value>`
+    ///
+    /// Eagerly executed
     pub fn with_value<V>(mut self, key: &str, value: V) -> Self
     where
         V: Into<Value> + Debug,
@@ -66,7 +63,11 @@ impl Config {
         }
     }
 
-    /// Take configs only with this prefix from all sources.
+    /// Filter configs from environment variables and .env file with prefix
+    ///
+    /// Lazily executed on build step.
+    ///
+    /// It doesn't filter configs from json, toml and yaml.
     pub fn with_env_prefix(mut self, prefix: &'static str) -> Self {
         Self {
             config_impl: self.config_impl.with_env_prefix(prefix),
@@ -74,6 +75,23 @@ impl Config {
     }
 
     /// Overwrite previous already existing configs keys
+    ///
+    /// Eagerly executed.
+    ///
+    /// Once called, it activated overwriting for next configs callings.
+    ///
+    /// Example:
+    /// ```rust
+    /// use configrs::config::Config;
+    /// use serde::Deserialize;
+    ///
+    /// #[derive(Debug, Deserialize)]
+    /// struct Cfg {}
+    /// // `.with_env("env_path.env")` will not overwrite what's in env(.new()), but `.with_toml("toml.toml")` will, because `.with_overwrite()` declared before.
+    /// let cfg = Config::new().with_env("env_path.env").with_overwrite().with_toml("toml.toml").build::<Cfg>();
+    /// ```
+    ///
+    /// Anything declared after `.with_overwrite` will overwrite anything before it in order of declarations.
     pub fn with_overwrite(mut self) -> Self {
         Self {
             config_impl: self.config_impl.with_overwrite(),
@@ -81,6 +99,8 @@ impl Config {
     }
 
     /// Add configs from .env file
+    ///
+    /// Eagerly executed
     pub fn with_env(mut self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_env(file_path),
@@ -88,6 +108,8 @@ impl Config {
     }
 
     /// Add configs from .json file
+    ///
+    /// Eagerly executed
     pub fn with_json(mut self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_json(file_path),
@@ -95,6 +117,8 @@ impl Config {
     }
 
     /// Add configs from .toml file
+    ///
+    /// Eagerly executed
     pub fn with_toml(mut self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_toml(file_path),
@@ -102,6 +126,8 @@ impl Config {
     }
 
     /// Add configs from .yaml file
+    ///
+    /// Eagerly executed
     pub fn with_yaml(mut self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_yaml(file_path),
@@ -109,6 +135,10 @@ impl Config {
     }
 
     /// Build configs into T
+    ///
+    /// This utilize serde DeserializeOwned type, so T must be implemented/derived the Deserialize and/or Serialize trait from serde.
+    ///
+    /// Use serde to alias or rename config fields as well as for default values or flattening the structure.
     pub fn build<T>(self) -> Result<T, ConfigError>
     where
         T: DeserializeOwned + Debug,
