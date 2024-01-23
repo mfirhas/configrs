@@ -53,5 +53,39 @@ fn test_prefix_from_env_vars_success() {
     env::remove_var("BOOL");
 }
 
+// test configurations with prefix from env variables, with non-nullable field without prefix
+#[test]
+fn test_prefix_from_env_vars_failed() {
+    let _lock = TEST_MUTEX.lock().unwrap();
+
+    env::set_var("ENV_KEY", "string value");
+    env::set_var("ENV_INT", "123");
+    env::set_var("BOOL", "true");
+
+    #[derive(Debug, Deserialize)]
+    struct Env {
+        #[serde(alias = "ENV_KEY")]
+        string: String,
+        #[serde(alias = "ENV_INT")]
+        integer: i32,
+        #[serde(alias = "BOOL")]
+        boolean: bool,
+        #[serde(alias = "ENVFLOAT")]
+        float: Option<f64>,
+        #[serde(alias = "env_FLOAT")]
+        string_2: Option<String>,
+    }
+
+    let prefix = "ENV_";
+    let cfg = Config::new().with_env_prefix(prefix).build::<Env>();
+    dbg!(&cfg);
+
+    assert!(cfg.is_err());
+
+    env::remove_var("ENV_KEY");
+    env::remove_var("ENV_INT");
+    env::remove_var("BOOL");
+}
+
 // test configurations with prefix from env vars and .env file
 fn test_prefix_from_env_vars_env_success() {}
