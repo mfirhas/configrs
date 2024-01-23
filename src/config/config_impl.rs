@@ -284,7 +284,7 @@ impl ConfigImpl {
     // }
 
     /// Build configs into T
-    pub fn build<T>(mut self) -> Result<T, super::config_error_impl::ConfigErrorImpl>
+    pub fn build<T>(self) -> Result<T, super::config_error_impl::ConfigErrorImpl>
     where
         T: DeserializeOwned + Debug,
     {
@@ -292,7 +292,7 @@ impl ConfigImpl {
             return Err(self.err.unwrap());
         }
 
-        let mut config_vals = if !self.prefix.is_empty() {
+        let config_vals = if !self.prefix.is_empty() {
             self.filter_env_prefix()
         } else {
             self
