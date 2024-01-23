@@ -121,12 +121,6 @@ impl ConfigImpl {
         }
         let reader = std::io::BufReader::new(file.unwrap());
         let json_data = serde_json::from_reader::<_, serde_json::Value>(reader);
-        if json_data.is_err() {
-            self.err = Some(super::config_error_impl::ConfigErrorImpl::JsonError(
-                json_data.unwrap_err().to_string(),
-            ));
-            return self;
-        }
         let ret = json_data.map_or_else(
             |err| {
                 return Self {
