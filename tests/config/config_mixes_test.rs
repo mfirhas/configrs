@@ -477,8 +477,8 @@ fn test_env_env_values_with_value_map() {
         .with_value("VAL_FLOAT", 2.340)
         .with_value("VAL_ARR", a)
         .with_value("VAL_INT", 409)
-        .with_value("VAL_MAP", map)
-        .with_value("VAL_MAP_VALUE", map_2)
+        .with_value("VAL_MAP", map.clone())
+        .with_value("VAL_MAP_VALUE", map_2.clone())
         .build::<Cfg>()
         .expect("test_env_env_values error");
     dbg!(&cfg);
@@ -489,6 +489,8 @@ fn test_env_env_values_with_value_map() {
     assert_eq!(cfg.boolean, true);
     assert_eq!(cfg.arr, &["anu", "nganu"]);
     assert_eq!(cfg.integer_2, 409);
+    assert_eq!(cfg.map, map);
+    assert_eq!(cfg.map_2, map_2);
 
     env::remove_var("ENV_STRING");
     env::remove_var("ENV_INT");
