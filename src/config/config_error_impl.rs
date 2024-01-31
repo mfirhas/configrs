@@ -1,5 +1,7 @@
 use std::{error::Error, fmt::Display};
 
+use super::ConfigError;
+
 // ConfigError traits implementations
 impl Display for super::ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -33,6 +35,13 @@ pub(super) enum ConfigErrorImpl {
     TomlError(String),
     EnvError(String),
     BuildError(String),
+
+    // serde
+    SerdeError(String),
+}
+
+impl ConfigErrorImpl {
+    pub const CONFIG_ERROR_IMPL_PREFIX: &'static str = "[CONFIG][ERROR][SERDE]";
 }
 
 impl Display for ConfigErrorImpl {
@@ -60,6 +69,9 @@ impl Display for ConfigErrorImpl {
             ConfigErrorImpl::BuildError(v) => {
                 writeln!(f, "Failed building config: {}", v)
             }
+            ConfigErrorImpl::SerdeError(v) => {
+                writeln!(f, "Failed parsing error into serde: {}", v)
+            }
         }
     }
 }
@@ -69,5 +81,25 @@ impl Error for ConfigErrorImpl {}
 impl From<serde_json::Error> for ConfigErrorImpl {
     fn from(value: serde_json::Error) -> Self {
         Self::BuildError(value.to_string())
+    }
+}
+
+impl serde::de::Error for ConfigErrorImpl {
+    fn custom<T>(msg: T) -> Self
+    where
+        T: Display,
+    {
+        Self::SerdeError(msg.to_string())
+    }
+}
+
+impl serde::de::Error for ConfigError {
+    fn custom<T>(msg: T) -> Self
+    where
+        T: Display,
+    {
+        Self {
+            config_error_impl: ConfigErrorImpl::SerdeError(msg.to_string()),
+        }
     }
 }

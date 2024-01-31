@@ -5,6 +5,7 @@ use serde::{de::DeserializeOwned, Serialize};
 mod config_error_impl;
 mod config_impl;
 mod value_impl;
+mod value_serde_impl;
 
 /// Valid values for configs
 #[derive(Debug, Clone, PartialEq, Serialize)]
