@@ -418,7 +418,7 @@ fn test_env_env_values_with_value_map() {
         integer_2: u32,
         #[serde(alias = "VAL_MAP")]
         map: HashMap<String, serde_json::Value>,
-        #[serde(alias = "VAL_MAP_2")]
+        #[serde(alias = "VAL_MAP_VALUE")]
         map_2: HashMap<String, Value>,
     }
 
@@ -430,13 +430,55 @@ fn test_env_env_values_with_value_map() {
     let map_2: HashMap<String, Value> = HashMap::from([
         ("key_1".to_string(), Value::Bool(true)),
         ("key_2".to_string(), Value::String("nganu".to_string())),
+        (
+            "key_3".to_string(),
+            Value::Array(vec![
+                Value::Int64(1),
+                Value::Int64(2),
+                Value::Int64(3),
+                Value::Int64(4),
+                Value::Int64(5),
+            ]),
+        ),
+        (
+            "key_4".to_string(),
+            Value::Array(vec![
+                Value::Bool(true),
+                Value::Float64(2.3),
+                Value::Array(vec![Value::Bool(true), Value::Float64(2.3)]),
+            ]),
+        ),
+        (
+            "key_5".to_string(),
+            Value::Map(HashMap::from([
+                ("sub_key_1".to_string(), Value::Int64(12)),
+                ("sub_key_2".to_string(), Value::Float64(12.0)),
+                ("sub_key_3".to_string(), Value::None),
+                (
+                    "sub_key_4".to_string(),
+                    Value::Array(vec![Value::Bool(true), Value::Float64(2.3)]),
+                ),
+                (
+                    "sub_key_5".to_string(),
+                    Value::Map(HashMap::from([
+                        ("sub_key_1".to_string(), Value::Int64(12)),
+                        ("sub_key_2".to_string(), Value::Float64(12.0)),
+                        ("sub_key_3".to_string(), Value::None),
+                        (
+                            "sub_key_4".to_string(),
+                            Value::Array(vec![Value::Bool(true), Value::Float64(2.3)]),
+                        ),
+                    ])),
+                ),
+            ])),
+        ),
     ]);
     let cfg = Config::new()
         .with_value("VAL_FLOAT", 2.340)
         .with_value("VAL_ARR", a)
         .with_value("VAL_INT", 409)
         .with_value("VAL_MAP", map)
-        .with_value("VAL_MAP_2", map_2)
+        .with_value("VAL_MAP_VALUE", map_2)
         .build::<Cfg>()
         .expect("test_env_env_values error");
     dbg!(&cfg);

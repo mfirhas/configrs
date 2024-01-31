@@ -1,7 +1,8 @@
 // test for enum Value representing data types can be used as value of configs.
 
 use configrs::config::Value;
-use std::collections::HashMap;
+use serde::{Deserialize, Serialize};
+use std::{collections::HashMap, hash::Hash};
 
 // test Display trait impl
 #[test]
@@ -205,4 +206,161 @@ fn test_value_serde_conversion() {
     let serde_number_float64: serde_json::Value = float64.into();
     let serde_arr: serde_json::Value = arr.into();
     let serde_map: serde_json::Value = map.into();
+}
+
+// serde tests
+#[test]
+fn test_serde_deserialization() {
+    let json_str = r#"
+    {
+        "array": [
+          1,
+          2,
+          3
+        ],
+        "boolean": true,
+        "color": "gold",
+        "null": null,
+        "number": 123,
+        "object": {
+          "a": "b",
+          "c": "d",
+          "d": {
+            "a": "string",
+            "b": 123,
+            "c": 123.00,
+            "d": true,
+            "e": null
+          },
+          "e": {
+            "a": "string",
+            "b": 123,
+            "c": 123.00,
+            "d": true,
+            "e": null,
+            "f": {
+              "a": "string",
+              "b": 123,
+              "c": 123.00,
+              "d": true,
+              "e": null
+          }
+          }
+        },
+        "string": "Hello World",
+        "negativeNumber": -234,
+        "negativeFloat": -234.2,
+        "arrayMix": [
+            123,
+            123.0,
+            false,
+            null,
+            "setring",
+            [
+              123,
+              123.0,
+              false,
+              null,
+              "setring"
+           ],
+           {
+              "emptyObj": {
+      
+              }
+           },
+           {
+            "bla": "blabla",
+            "ff": 4.20
+           }
+        ],
+        "emptyObj": {},
+        "null": null
+      }
+    "#;
+
+    let expected_map = HashMap::from([
+        ("number".to_string(), Value::Int64(123)),
+        ("boolean".to_string(), Value::Bool(true)),
+        ("negativeNumber".to_string(), Value::Int64(-234)),
+        ("color".to_string(), Value::String("gold".to_string())),
+        (
+            "array".to_string(),
+            Value::Array(vec![Value::Int64(1), Value::Int64(2), Value::Int64(3)]),
+        ),
+        ("negativeFloat".to_string(), Value::Float64(-234.2)),
+        (
+            "object".to_string(),
+            Value::Map(HashMap::from([
+                ("a".to_string(), Value::String(String::from("b"))),
+                ("c".to_string(), Value::String(String::from("d"))),
+                (
+                    "d".to_string(),
+                    Value::Map(HashMap::from([
+                        ("a".to_string(), Value::String(String::from("string"))),
+                        ("b".to_string(), Value::Int64(123)),
+                        ("c".to_string(), Value::Float64(123.0)),
+                        ("d".to_string(), Value::Bool(true)),
+                        ("e".to_string(), Value::None),
+                    ])),
+                ),
+                (
+                    "e".to_string(),
+                    Value::Map(HashMap::from([
+                        ("a".to_string(), Value::String(String::from("string"))),
+                        ("b".to_string(), Value::Int64(123)),
+                        ("c".to_string(), Value::Float64(123.0)),
+                        ("d".to_string(), Value::Bool(true)),
+                        ("e".to_string(), Value::None),
+                        (
+                            "f".to_string(),
+                            Value::Map(HashMap::from([
+                                ("a".to_string(), Value::String(String::from("string"))),
+                                ("b".to_string(), Value::Int64(123)),
+                                ("c".to_string(), Value::Float64(123.0)),
+                                ("d".to_string(), Value::Bool(true)),
+                                ("e".to_string(), Value::None),
+                            ])),
+                        ),
+                    ])),
+                ),
+            ])),
+        ),
+        (
+            "string".to_string(),
+            Value::String(String::from("Hello World")),
+        ),
+        ("emptyObj".to_string(), Value::Map(HashMap::new())),
+        ("null".to_string(), Value::None),
+        (
+            "arrayMix".to_string(),
+            Value::Array(vec![
+                Value::Int64(123),
+                Value::Float64(123.0),
+                Value::Bool(false),
+                Value::None,
+                Value::String("setring".to_string()),
+                Value::Array(vec![
+                    Value::Int64(123),
+                    Value::Float64(123.0),
+                    Value::Bool(false),
+                    Value::None,
+                    Value::String("setring".to_string()),
+                ]),
+                Value::Map(HashMap::from([(
+                    "emptyObj".to_string(),
+                    Value::Map(HashMap::new()),
+                )])),
+                Value::Map(HashMap::from([
+                    ("ff".to_string(), Value::Float64(4.2)),
+                    ("bla".to_string(), Value::String(String::from("blabla"))),
+                ])),
+            ]),
+        ),
+    ]);
+
+    let json = serde_json::from_str::<HashMap<String, Value>>(json_str);
+    assert!(json.is_ok());
+    let json = json.unwrap();
+    dbg!(&json);
+    assert_eq!(expected_map, json);
 }
