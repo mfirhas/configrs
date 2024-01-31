@@ -37,7 +37,6 @@ pub struct Config {
 impl Config {
     /// Initialized configs from environment variables.
     ///
-    /// Eagerly executed
     pub fn new() -> Self {
         Self {
             config_impl: config_impl::ConfigImpl::new(),
@@ -54,7 +53,6 @@ impl Config {
     /// - `Vector<Value>`,
     /// - `HashMap<String, Value>`
     ///
-    /// Eagerly executed
     pub fn with_value<V>(self, key: &str, value: V) -> Self
     where
         V: Into<Value> + Debug,
@@ -66,7 +64,6 @@ impl Config {
 
     /// Filter configs from environment variables and .env file with prefix
     ///
-    /// Lazily executed on build step.
     ///
     /// It doesn't filter configs from json, toml and yaml.
     pub fn with_env_prefix(self, prefix: &'static str) -> Self {
@@ -76,8 +73,6 @@ impl Config {
     }
 
     /// Overwrite previous already existing configs keys
-    ///
-    /// Eagerly executed.
     ///
     /// Once called, it activated overwriting for next configs callings.
     ///
@@ -101,7 +96,6 @@ impl Config {
 
     /// Add configs from .env file
     ///
-    /// Eagerly executed
     pub fn with_env(self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_env(file_path),
@@ -110,7 +104,6 @@ impl Config {
 
     /// Add configs from .json file
     ///
-    /// Eagerly executed
     pub fn with_json(self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_json(file_path),
@@ -119,7 +112,6 @@ impl Config {
 
     /// Add configs from .toml file
     ///
-    /// Eagerly executed
     pub fn with_toml(self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_toml(file_path),
@@ -128,7 +120,6 @@ impl Config {
 
     /// Add configs from .yaml file
     ///
-    /// Eagerly executed
     pub fn with_yaml(self, file_path: impl AsRef<Path>) -> Self {
         Self {
             config_impl: self.config_impl.with_yaml(file_path),
