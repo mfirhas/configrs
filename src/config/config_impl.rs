@@ -1,6 +1,7 @@
 // TODO:
 // - Refactor codes that use `.unwrap`
 // - Refactor procedural error handling to be more "FP"
+// - Refactor: implement with conversion trait.
 
 use serde::de::DeserializeOwned;
 use serde_json::json;
