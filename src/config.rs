@@ -48,8 +48,8 @@ impl Config {
     ///
     /// Accepted `Value`:
     /// - `&str`/`String`,
-    /// - `i32`/i64`,
-    /// - `f32`/f64`,
+    /// - `i32`/`i64`,
+    /// - `f32`/`f64`,
     /// - `bool`,
     /// - `Vector<Value>`,
     /// - `HashMap<String, Value>`
