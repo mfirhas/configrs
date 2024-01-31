@@ -64,7 +64,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected bool, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -78,7 +78,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i8, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -92,7 +92,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i16, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -106,7 +106,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i32, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -120,7 +120,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -134,7 +134,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -148,7 +148,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -162,7 +162,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -176,7 +176,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected i64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -190,7 +190,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected f64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -204,7 +204,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected f64, found {:?}",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
             self
         ))
         .into())
@@ -219,7 +219,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected string",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX
         ))
         .into())
     }
@@ -232,7 +232,7 @@ impl<'de> Deserializer<'de> for super::Value {
         }
         Err(ConfigErrorImpl::SerdeError(format!(
             "{} expected string",
-            ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX
+            ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX
         ))
         .into())
     }
@@ -305,7 +305,7 @@ impl<'de> serde::de::SeqAccess<'de> for SeqAccess {
             Some((idx, value)) => seed.deserialize(value).map(Some).map_err(|e| {
                 ConfigErrorImpl::SerdeError(format!(
                     "{} failed deserializing array/slice at index {}: {}",
-                    ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+                    ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
                     idx,
                     e
                 ))
@@ -362,7 +362,7 @@ impl<'de> serde::de::MapAccess<'de> for MapAccess {
         serde::de::DeserializeSeed::deserialize(seed, value).map_err(|e| {
             ConfigErrorImpl::SerdeError(format!(
                 "{} failed deserializing map at key {}: {}",
-                ConfigErrorImpl::CONFIG_ERROR_IMPL_PREFIX,
+                ConfigErrorImpl::CONFIG_ERROR_IMPL_SERDE_PREFIX,
                 &key,
                 e
             ))

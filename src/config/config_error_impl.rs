@@ -41,7 +41,7 @@ pub(super) enum ConfigErrorImpl {
 }
 
 impl ConfigErrorImpl {
-    pub const CONFIG_ERROR_IMPL_PREFIX: &'static str = "[CONFIG][ERROR][SERDE]";
+    pub const CONFIG_ERROR_IMPL_SERDE_PREFIX: &'static str = "[CONFIG][ERROR][SERDE]";
 }
 
 impl Display for ConfigErrorImpl {
