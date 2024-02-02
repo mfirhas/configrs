@@ -98,9 +98,18 @@ impl From<super::Value> for serde_json::Value {
         match value {
             super::Value::Bool(v) => serde_json::Value::Bool(v),
             super::Value::Int64(v) => serde_json::Value::Number(serde_json::Number::from(v)),
-            super::Value::Float64(v) => serde_json::Value::Number(
-                serde_json::Number::from_f64(v).unwrap(), // TODO: remove unwrap.
-            ),
+            super::Value::Float64(v) => {
+                serde_json::Value::Number(serde_json::Number::from_f64(v).map_or_else(
+                    || {
+                        // f64::MAX > i64::MAX as f64
+                        if v <= i64::MAX as f64 {
+                            return serde_json::Number::from(v as i64);
+                        }
+                        return serde_json::Number::from(0_i64);
+                    },
+                    |v| v,
+                ))
+            }
             super::Value::String(v) => serde_json::Value::String(v),
             super::Value::Array(v) => serde_json::Value::Array(
                 v.into_iter()
@@ -126,9 +135,9 @@ impl From<serde_json::Value> for super::Value {
             serde_json::Value::Null => Self::None,
             serde_json::Value::Number(v) => {
                 if v.is_f64() {
-                    return Self::Float64(v.as_f64().unwrap()); // TODO: refactor this unwrap, for now guarded by if statement
+                    return Self::Float64(v.as_f64().unwrap_or(f64::default()));
                 }
-                Self::Int64(v.as_i64().unwrap_or(0))
+                Self::Int64(v.as_i64().unwrap_or(i64::default()))
             }
             serde_json::Value::Object(v) => {
                 Self::Map(v.into_iter().map(|(k, v)| (k, v.into())).collect())
