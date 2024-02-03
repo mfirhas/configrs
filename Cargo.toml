@@ -1,6 +1,6 @@
 [package]
 name = "configrs"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Muhammad Fathir Irhas <mfathirirhas@gmail.com>"]
 description = "Configuration library"
