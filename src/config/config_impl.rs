@@ -4,6 +4,7 @@
 use serde::de::DeserializeOwned;
 use serde_json::json;
 use std::env;
+use std::error::Error;
 use std::fmt::Debug;
 use std::path::Path;
 
@@ -43,8 +44,7 @@ impl ConfigImpl {
 
         // check duplicate if not overwrite
         if !self.overwrite && Self::is_exist(&self.env, key) {
-            self.err = Some(ConfigErrorImpl::DuplicateKey(key.to_string()));
-            return self;
+            return Self::make_err(ConfigErrorImpl::DuplicateKey(key.to_string()));
         }
 
         self.env
@@ -69,16 +69,15 @@ impl ConfigImpl {
             return self;
         }
 
-        let env_map = env_file_reader::read_file(file_path).map_or_else(
+        let env_map = env_file_reader::read_file(&file_path).map_or_else(
             |err| {
-                return Self::make_err(ConfigErrorImpl::EnvError(err.to_string()));
+                return Self::make_err(Self::make_err_open_file(&file_path, err));
             },
             |env_map_iter| {
                 for (key, val) in env_map_iter {
                     // check duplicate if not overwrite
                     if !self.overwrite && Self::is_exist(&self.env, &key) {
-                        self.err = Some(ConfigErrorImpl::DuplicateKey(key));
-                        return self;
+                        return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                     }
                     let value = Self::parse_str(&val);
                     self.env.insert(key, value);
@@ -112,8 +111,7 @@ impl ConfigImpl {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
                                 if !self.overwrite && Self::is_exist(&self.env, &key) {
-                                    self.err = Some(ConfigErrorImpl::DuplicateKey(key));
-                                    return self;
+                                    return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
                             }
@@ -149,8 +147,7 @@ impl ConfigImpl {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
                                 if !self.overwrite && Self::is_exist(&self.env, &key) {
-                                    self.err = Some(ConfigErrorImpl::DuplicateKey(key));
-                                    return self;
+                                    return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
                             }
@@ -182,8 +179,7 @@ impl ConfigImpl {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
                                 if !self.overwrite && Self::is_exist(&self.env, &key) {
-                                    self.err = Some(ConfigErrorImpl::DuplicateKey(key));
-                                    return self;
+                                    return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
                             }
@@ -272,5 +268,13 @@ impl ConfigImpl {
             err: Some(err),
             ..Default::default()
         }
+    }
+
+    fn make_err_open_file(file_path: &impl AsRef<Path>, err: impl Error) -> ConfigErrorImpl {
+        ConfigErrorImpl::FileError(format!(
+            "error opening file {}: {}",
+            file_path.as_ref().display(),
+            err.to_string()
+        ))
     }
 }

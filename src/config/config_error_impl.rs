@@ -27,13 +27,11 @@ impl From<ConfigErrorImpl> for super::ConfigError {
 // ConfigErrorImpl
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(super) enum ConfigErrorImpl {
-    ParseError(String),
     DuplicateKey(String),
     FileError(String),
     JsonError(String),
     YamlError(String),
     TomlError(String),
-    EnvError(String),
     BuildError(String),
 
     // serde
@@ -47,7 +45,6 @@ impl ConfigErrorImpl {
 impl Display for ConfigErrorImpl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            ConfigErrorImpl::ParseError(v) => writeln!(f, "Parsing error: {}", v),
             ConfigErrorImpl::DuplicateKey(v) => {
                 writeln!(f, "Overwrite is false, found key: {} is duplicated", v)
             }
@@ -62,9 +59,6 @@ impl Display for ConfigErrorImpl {
             }
             ConfigErrorImpl::TomlError(v) => {
                 writeln!(f, "Toml parsing error: {}", v)
-            }
-            ConfigErrorImpl::EnvError(v) => {
-                writeln!(f, "Env parsing error: {}", v)
             }
             ConfigErrorImpl::BuildError(v) => {
                 writeln!(f, "Failed building config: {}", v)
