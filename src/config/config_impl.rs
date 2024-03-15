@@ -199,8 +199,8 @@ impl ConfigImpl {
     where
         T: DeserializeOwned + Debug,
     {
-        if self.err.is_some() {
-            return Err(self.err.unwrap());
+        if let Some(err) = self.err {
+            return Err(err);
         }
 
         let config_vals = if !self.prefix.is_empty() {
