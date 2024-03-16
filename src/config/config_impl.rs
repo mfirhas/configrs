@@ -1,5 +1,5 @@
 // TODO:
-// - Refactor: implement with conversion trait.
+// - Refactor: make illegal states unrepresentable
 
 use serde::de::DeserializeOwned;
 use serde_json::json;
