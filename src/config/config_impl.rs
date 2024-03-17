@@ -135,12 +135,7 @@ impl ConfigImpl {
             move |err| Self::make_err(err),
             move |s| {
                 let ret = toml::from_str::<toml::Value>(&s).map_or_else(
-                    move |err| Self {
-                        err: Some(super::config_error_impl::ConfigErrorImpl::TomlError(
-                            err.to_string(),
-                        )),
-                        ..Default::default()
-                    },
+                    move |err| Self::make_err(ConfigErrorImpl::TomlError(err.to_string())),
                     move |d| {
                         let jsoned = json!(d);
                         if let serde_json::Value::Object(v) = jsoned {
@@ -208,6 +203,18 @@ impl ConfigImpl {
         } else {
             self
         };
+
+        if !&config_vals.overwrite {
+            let is_env_file_env_duplicate = config_vals
+                .env
+                .keys()
+                .any(|k| config_vals.files_env.contains_key(k));
+            if is_env_file_env_duplicate {
+                return Err(ConfigErrorImpl::DuplicateKey(String::from(
+                    "found duplicate key between env and values with json, toml and yaml ",
+                )));
+            }
+        }
 
         let config_vals = config_vals.merge_env_files_env();
 
