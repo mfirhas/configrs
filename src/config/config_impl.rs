@@ -110,7 +110,7 @@ impl ConfigImpl {
                         if let serde_json::Value::Object(v) = json_value {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
-                                if !self.overwrite && Self::is_exist(&self.env, &key) {
+                                if !self.overwrite && Self::is_exist(&self.files_env, &key) {
                                     return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
@@ -146,7 +146,7 @@ impl ConfigImpl {
                         if let serde_json::Value::Object(v) = jsoned {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
-                                if !self.overwrite && Self::is_exist(&self.env, &key) {
+                                if !self.overwrite && Self::is_exist(&self.files_env, &key) {
                                     return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
@@ -178,7 +178,7 @@ impl ConfigImpl {
                         if let serde_json::Value::Object(v) = val {
                             for (key, val) in v {
                                 // check duplicate if not overwrite
-                                if !self.overwrite && Self::is_exist(&self.env, &key) {
+                                if !self.overwrite && Self::is_exist(&self.files_env, &key) {
                                     return Self::make_err(ConfigErrorImpl::DuplicateKey(key));
                                 }
                                 self.files_env.insert(key, val);
