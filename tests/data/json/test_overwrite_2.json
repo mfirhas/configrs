@@ -1,0 +1,28 @@
+{
+    "envString2": "string",
+    "envInteger2": 123,
+    "envFloat2": 123.0,
+    "envBoolean2": true,
+    "envArr2": ["anu","nganu","lskmdf","lwkef","lkemrg"],
+    "subEnv2": {
+        "subEnvString2": "string",
+        "subEnvInteger2": 123,
+        "subEnvFloat2": 123.0,
+        "subEnvBoolean2": true,
+        "subEnvArr2": ["anu","nganu","lskmdf","lwkef","lkemrg"],
+        "subSubEnv2": {
+            "subSubEnvString2": "string",
+            "subSubEnvInteger2": 123,
+            "subSubEnvFloat2": 123.0,
+            "subSubEnvBoolean2": true,
+            "subSubEnvArr2": ["anu","nganu","lskmdf","lwkef","lkemrg"]
+        }
+    },
+    "subEnv22": {
+        "subEnv2String2": "string",
+        "subEnv2Integer2": 123,
+        "subEnv2Float2": 123.0,
+        "subEnv2Boolean2": true,
+        "subEnv2Arr2": ["anu","nganu","lskmdf","lwkef","lkemrg"]
+    }
+}

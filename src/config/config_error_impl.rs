@@ -5,7 +5,7 @@ use super::ConfigError;
 // ConfigError traits implementations
 impl Display for super::ConfigError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(
+        write!(
             f,
             "{} {}",
             super::ConfigError::CONFIG_ERROR_PREFIX,
@@ -46,25 +46,25 @@ impl Display for ConfigErrorImpl {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             ConfigErrorImpl::DuplicateKey(v) => {
-                writeln!(f, "Overwrite is false, found key: {} is duplicated", v)
+                write!(f, "Overwrite is false, found key: {} is duplicated", v)
             }
             ConfigErrorImpl::FileError(v) => {
-                writeln!(f, "File error: {}", v)
+                write!(f, "File error: {}", v)
             }
             ConfigErrorImpl::JsonError(v) => {
-                writeln!(f, "Json parsing error: {}", v)
+                write!(f, "Json parsing error: {}", v)
             }
             ConfigErrorImpl::YamlError(v) => {
-                writeln!(f, "Yaml parsing error: {}", v)
+                write!(f, "Yaml parsing error: {}", v)
             }
             ConfigErrorImpl::TomlError(v) => {
-                writeln!(f, "Toml parsing error: {}", v)
+                write!(f, "Toml parsing error: {}", v)
             }
             ConfigErrorImpl::BuildError(v) => {
-                writeln!(f, "Failed building config: {}", v)
+                write!(f, "Failed building config: {}", v)
             }
             ConfigErrorImpl::SerdeError(v) => {
-                writeln!(f, "Failed parsing error into serde: {}", v)
+                write!(f, "Failed parsing error into serde: {}", v)
             }
         }
     }
