@@ -20,6 +20,15 @@ jobs:
           toolchain: stable
           override: true
 
+      - name: Cache run data
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
       - name: Run cargo check
         uses: actions-rs/cargo@v1
         with:
@@ -40,8 +49,18 @@ jobs:
           toolchain: stable
           override: true
 
-      - name: Run cargo test
-        uses: actions-rs/cargo@v1
+      - name: Cache run data
+        uses: actions/cache@v2
         with:
-          command: test
-          args: -- --test-threads=1
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Run test
+        uses: actions-rs/tarpaulin@v0.1
+        with:
+          version: "0.27.3"
+          args: "--avoid-cfg-tarpaulin -p shared -- --test-threads 1"
+          out-type: Lcov
