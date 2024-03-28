@@ -61,6 +61,6 @@ jobs:
       - name: Run test
         uses: actions-rs/tarpaulin@v0.1
         with:
-          version: latest
+          version: 0.27.3
           args: "--avoid-cfg-tarpaulin -p shared -- --test-threads 1"
           out-type: Lcov
