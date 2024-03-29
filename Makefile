@@ -4,7 +4,10 @@ install:
 
 test:
 	@echo "running test"
-	@CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='z-%p-%m.profraw' cargo test -- --test-threads=1
+	@CARGO_INCREMENTAL=0 \
+	 RUSTFLAGS="-Zprofile -Ccodegen-units=1 -Copt-level=0 -Clink-dead-code -Coverflow-checks=off -Zpanic_abort_tests -Cpanic=abort" \
+	 RUSTDOCFLAGS="-Cpanic=abort" \
+	 cargo +nightly test -- --test-threads=1
 
 cover:
 	@echo "generate code coverage"
