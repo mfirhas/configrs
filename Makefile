@@ -15,4 +15,4 @@ test:
 
 cover:
 	@echo "generate code coverage"
-	@grcov target/debug/ -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/lcov.info --ignore '/*'
+	@grcov target/debug/ -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./target/debug/lcov.info --ignore '/*' --ignore 'examples/*' --ignore 'tests/*' --ignore 'target/*'
