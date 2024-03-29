@@ -8,5 +8,4 @@ test:
 
 cover:
 	@echo "generate code coverage"
-	# @grcov . -s . --binary-path ./target/debug/ -t coveralls --branch --ignore-not-existing -o ./lcov.info
-	@grcov . --binary-path ./target/debug/ -t coveralls -s . --token ${{ secrets.COVERALLS_TOKEN }} > coveralls.json
+	@grcov . -s . --binary-path ./target/debug/ -t lcov --branch --ignore-not-existing -o ./lcov.info
