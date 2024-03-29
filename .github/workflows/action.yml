@@ -47,6 +47,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Cache run data
+        id: cache-cargo
         uses: actions/cache@v2
         with:
           path: |
@@ -56,7 +57,7 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Install stable toolchain
+      - name: Install nightly toolchain
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
@@ -64,7 +65,9 @@ jobs:
           override: true
           components: llvm-tools-preview
       
-      - name: Install grcov
+      - if: ${{ steps.cache-cargo.outputs.cache-hit != 'true' }}
+        name: Install grcov
+        continue-on-error: true
         run: make install
 
       - name: Run test
