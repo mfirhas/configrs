@@ -35,7 +35,7 @@ jobs:
           command: check
 
   test:
-    name: Test Suite
+    name: Test
     runs-on: ubuntu-latest
     needs: check
     steps:
@@ -46,7 +46,7 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: nightly
           override: true
 
       - name: Cache run data
@@ -58,9 +58,8 @@ jobs:
             target
           key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - name: Run test
-        uses: actions-rs/tarpaulin@v0.1
-        with:
-          version: "0.18.0-alpha3"
-          args: "--avoid-cfg-tarpaulin -p shared -- --test-threads 1"
-          out-type: Lcov
+      - name: Install grcov
+        run: make install
+
+      - name: Run code coverage
+        run: make cover
