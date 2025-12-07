@@ -67,7 +67,7 @@ jobs:
       
       - if: ${{ steps.cache-cargo.outputs.cache-hit != 'true' }}
         name: Install grcov
-        continue-on-error: true
+        # continue-on-error: true
         run: make install
 
       - name: Debug show nightly sysroot & llvm tools

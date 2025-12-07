@@ -15,6 +15,10 @@ ifeq ($(LLVM_PROFDATA),)
 	$(error llvm-profdata not found. Install with: rustup component add llvm-tools-preview --toolchain nightly)
 endif
 
+install:
+	@echo "install grcov..."
+	@cargo install grcov
+
 test:
 	@echo "running tests with coverage instrumentation..."
 	@CARGO_INCREMENTAL=0 \
