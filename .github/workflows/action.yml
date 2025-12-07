@@ -16,6 +16,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: TruffleHog Leaks Scan
+        uses: trufflesecurity/trufflehog@v3.91.2
+        with:
+          extra_args: --only-verified
 
       - name: Cache run data
         uses: actions/cache@v4
@@ -45,13 +52,6 @@ jobs:
     steps:
       - name: Checkout sources
         uses: actions/checkout@v6
-        with:
-          fetch-depth: 0
-
-      - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@v3.91.2
-        with:
-          extra_args: --only-verified
 
       - name: Cache run data
         id: cache-cargo
