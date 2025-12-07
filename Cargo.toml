@@ -1,8 +1,8 @@
 [package]
 name = "configrs"
-version = "0.1.4"
-edition = "2021"
-authors = ["Muhammad Fathir Irhas <mfathirirhas@gmail.com>"]
+version = "0.2.0"
+edition = "2024"
+authors = ["Muhammad Fathir Irhas <fathir.irhas@gmail.com>"]
 description = "Configuration library"
 license = "MIT"
 repository = "https://github.com/mfirhas/configrs"

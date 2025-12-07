@@ -16,9 +16,15 @@ static TEST_MUTEX: Mutex<()> = Mutex::new(());
 fn test_prefix_from_env_vars_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_KEY", "string value");
-    env::set_var("ENV_INT", "123");
-    env::set_var("BOOL", "true");
+    unsafe {
+        env::set_var("ENV_KEY", "string value");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize)]
     struct Env {
@@ -48,9 +54,15 @@ fn test_prefix_from_env_vars_success() {
     assert_eq!(cfg.float, None);
     assert_eq!(cfg.string_2, None);
 
-    env::remove_var("ENV_KEY");
-    env::remove_var("ENV_INT");
-    env::remove_var("BOOL");
+    unsafe {
+        env::remove_var("ENV_KEY");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("BOOL");
+    }
 }
 
 // test configurations with prefix from env variables, with non-nullable field without prefix
@@ -58,9 +70,15 @@ fn test_prefix_from_env_vars_success() {
 fn test_prefix_from_env_vars_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_KEY", "string value");
-    env::set_var("ENV_INT", "123");
-    env::set_var("BOOL", "true");
+    unsafe {
+        env::set_var("ENV_KEY", "string value");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize)]
     struct Env {
@@ -82,9 +100,15 @@ fn test_prefix_from_env_vars_failed() {
 
     assert!(cfg.is_err());
 
-    env::remove_var("ENV_KEY");
-    env::remove_var("ENV_INT");
-    env::remove_var("BOOL");
+    unsafe {
+        env::remove_var("ENV_KEY");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("BOOL");
+    }
 }
 
 // test configurations with prefix from env vars and .env file
@@ -92,9 +116,15 @@ fn test_prefix_from_env_vars_failed() {
 fn test_prefix_from_env_vars_env_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_KEY", "string value");
-    env::set_var("ENV_INT", "123");
-    env::set_var("BOOL", "true");
+    unsafe {
+        env::set_var("ENV_KEY", "string value");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize)]
     struct Env {
@@ -138,7 +168,13 @@ fn test_prefix_from_env_vars_env_success() {
     assert_eq!(cfg.val_integer, 123);
     assert_eq!(cfg.val_float, None);
 
-    env::remove_var("ENV_KEY");
-    env::remove_var("ENV_INT");
-    env::remove_var("BOOL");
+    unsafe {
+        env::remove_var("ENV_KEY");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("BOOL");
+    }
 }

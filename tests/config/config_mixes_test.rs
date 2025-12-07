@@ -13,9 +13,15 @@ static TEST_MUTEX: Mutex<()> = Mutex::new(());
 fn test_env_env_values() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize, Serialize)]
     struct Cfg {
@@ -56,9 +62,15 @@ fn test_env_env_values() {
     assert_eq!(cfg.arr, &["anu", "nganu"]);
     assert_eq!(cfg.integer_2, 409);
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 // test by mixing all sources of configs
@@ -66,9 +78,15 @@ fn test_env_env_values() {
 fn test_mix_all() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     let file_path_env = "./tests/data/mixes/test.env";
     let file_path_json = "./tests/data/mixes/test.json";
@@ -388,9 +406,15 @@ fn test_mix_all() {
     assert_eq!(cfg.integer_2, 409);
     assert_eq!(cfg.map, map);
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 // use config Value map as config values
@@ -398,9 +422,15 @@ fn test_mix_all() {
 fn test_env_env_values_with_value_map() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize, Serialize)]
     struct Cfg {
@@ -492,7 +522,13 @@ fn test_env_env_values_with_value_map() {
     assert_eq!(cfg.map, map);
     assert_eq!(cfg.map_2, map_2);
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }

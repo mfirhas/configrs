@@ -11,9 +11,15 @@ static TEST_MUTEX: Mutex<()> = Mutex::new(());
 fn test_overwrite_with_values_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize, Serialize)]
     struct Cfg {
@@ -57,9 +63,15 @@ fn test_overwrite_with_values_success() {
     assert_eq!(cfg.integer_2, 409);
     assert_eq!(cfg.map, map);
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 // test overwriting env var with values and success
@@ -67,10 +79,18 @@ fn test_overwrite_with_values_success() {
 fn test_overwrite_map_with_values_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
-    env::set_var("ENV_MAP", "this is original map");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
+    unsafe {
+        env::set_var("ENV_MAP", "this is original map");
+    }
 
     #[derive(Debug, Deserialize, Serialize)]
     struct Cfg {
@@ -113,10 +133,18 @@ fn test_overwrite_map_with_values_success() {
     assert_eq!(cfg.integer_2, 409);
     assert_eq!(cfg.map, map);
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_MAP");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_MAP");
+    }
 }
 
 // test overwriting env var with values and failed by deactivating .with_overwrite()
@@ -124,9 +152,15 @@ fn test_overwrite_map_with_values_success() {
 fn test_overwrite_with_values_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
-    env::set_var("ENV_STRING", "asd");
-    env::set_var("ENV_INT", "4");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "asd");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "4");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     #[derive(Debug, Deserialize, Serialize)]
     struct Cfg {
@@ -163,9 +197,15 @@ fn test_overwrite_with_values_failed() {
 
     assert!(cfg.is_err());
 
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 #[test]

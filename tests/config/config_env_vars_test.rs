@@ -19,10 +19,18 @@ fn test_env_vars_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -49,10 +57,18 @@ fn test_env_vars_success() {
     assert_eq!(cfg.float, 1001.2);
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load from environment variables with missing required value from env.
@@ -61,9 +77,15 @@ fn test_env_vars_missing_field_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -86,9 +108,15 @@ fn test_env_vars_missing_field_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load config with duplicated field in struct from the same env var value
@@ -98,10 +126,18 @@ fn test_env_vars_duplicate_field_alias_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -125,10 +161,18 @@ fn test_env_vars_duplicate_field_alias_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load config with different letter case between struct's field and env vars key.
@@ -138,10 +182,18 @@ fn test_env_vars_case_sensitivity_fields_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -163,10 +215,18 @@ fn test_env_vars_case_sensitivity_fields_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load config with different letter case between serde's alias field and env vars key.
@@ -175,10 +235,18 @@ fn test_env_vars_case_sensitivity_alias_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -200,10 +268,18 @@ fn test_env_vars_case_sensitivity_alias_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load config with some default values(Default trait) with serde default attribute.
@@ -212,10 +288,16 @@ fn test_env_vars_default_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    // env::set_var("ENV_STRING", "anu"); // will use default instead
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    // unsafe { env::set_var("ENV_STRING", "anu"); } // will use default instead
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
     //  // will use default instead
 
     // type
@@ -243,9 +325,15 @@ fn test_env_vars_default_success() {
     assert_eq!(cfg.float, 1001.2);
 
     // teardown
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 /// Load config with custom default values
@@ -254,10 +342,14 @@ fn test_env_vars_default_custom_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    // env::set_var("ENV_STRING", "anu"); // will use default instead
-    env::set_var("ENV_INT", "123");
-    // env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    // unsafe { env::set_var("ENV_STRING", "anu"); } // will use default instead
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    // unsafe { env::set_var("ENV_FLOAT", "1001.2"); }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
     //  // will use default instead
 
     // type
@@ -288,8 +380,12 @@ fn test_env_vars_default_custom_success() {
     assert_eq!(cfg.float, 3.5);
 
     // teardown
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_BOOL");
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
 }
 
 // // nested---------------------------------------------------------------------------------------------
@@ -302,21 +398,49 @@ fn test_env_vars_nested_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -381,21 +505,51 @@ fn test_env_vars_nested_success() {
     assert_eq!(cfg.cfg_nested.cfg_nested_nested.float, 1001.2);
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
 
 /// Load from environment variables with missing required value from env.
@@ -404,15 +558,31 @@ fn test_env_vars_nested_missing_field_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -447,16 +617,36 @@ fn test_env_vars_nested_missing_field_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
 }
 
 /// Load config with duplicated field in struct from the same env var value
@@ -465,21 +655,49 @@ fn test_env_vars_nested_duplicate_field_alias_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -533,21 +751,51 @@ fn test_env_vars_nested_duplicate_field_alias_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
 
 /// Load config with different letter case between struct's field and env vars key.
@@ -556,21 +804,49 @@ fn test_env_vars_nested_case_sensitivity_fields_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -620,21 +896,51 @@ fn test_env_vars_nested_case_sensitivity_fields_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
 
 /// Load config with different letter case between serde's alias field and env vars key.
@@ -643,21 +949,49 @@ fn test_env_vars_nested_case_sensitivity_alias_failed() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -707,21 +1041,51 @@ fn test_env_vars_nested_case_sensitivity_alias_failed() {
     assert!(&cfg.is_err());
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
 
 /// Load config with some default values(Default trait) with serde default attribute.
@@ -730,19 +1094,43 @@ fn test_env_vars_nested_default_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_BOOL_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_STRING_NESTED_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_STRING_NESTED_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -808,20 +1196,48 @@ fn test_env_vars_nested_default_success() {
     assert_eq!(cfg.cfg_nested.cfg_nested_nested.float, 0_f64);
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
 
 /// Load config with custom default values
@@ -830,18 +1246,40 @@ fn test_env_vars_nested_default_custom_success() {
     let _lock = TEST_MUTEX.lock().unwrap();
 
     // setup
-    env::set_var("ENV_STRING", "anu");
-    env::set_var("ENV_INT", "123");
-    env::set_var("ENV_FLOAT", "1001.2");
-    env::set_var("ENV_BOOL", "true");
+    unsafe {
+        env::set_var("ENV_STRING", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL", "true");
+    }
 
-    env::set_var("ENV_STRING_NESTED", "anu");
-    env::set_var("ENV_INT_NESTED", "123");
-    env::set_var("ENV_FLOAT_NESTED", "1001.2");
-    env::set_var("ENV_ARR_NESTED", "123,234,345,456");
-    env::set_var("ENV_INT_NESTED_NESTED", "123");
-    env::set_var("ENV_BOOL_NESTED_NESTED", "true");
-    env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    unsafe {
+        env::set_var("ENV_STRING_NESTED", "anu");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_FLOAT_NESTED", "1001.2");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED", "123,234,345,456");
+    }
+    unsafe {
+        env::set_var("ENV_INT_NESTED_NESTED", "123");
+    }
+    unsafe {
+        env::set_var("ENV_BOOL_NESTED_NESTED", "true");
+    }
+    unsafe {
+        env::set_var("ENV_ARR_NESTED_NESTED", "123,234,345,456");
+    }
 
     // type
     #[derive(Debug, Deserialize)]
@@ -913,19 +1351,49 @@ fn test_env_vars_nested_default_custom_success() {
     assert_eq!(cfg.cfg_nested.cfg_nested_nested.float, 3.44);
 
     // teardown
-    env::remove_var("ENV_STRING");
-    env::remove_var("ENV_INT");
-    env::remove_var("ENV_FLOAT");
-    env::remove_var("ENV_BOOL");
-    env::remove_var("ENV_ARR");
-    env::remove_var("ENV_STRING_NESTED");
-    env::remove_var("ENV_INT_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED");
-    env::remove_var("ENV_BOOL_NESTED");
-    env::remove_var("ENV_ARR_NESTED");
-    env::remove_var("ENV_STRING_NESTED_NESTED");
-    env::remove_var("ENV_INT_NESTED_NESTED");
-    env::remove_var("ENV_FLOAT_NESTED_NESTED");
-    env::remove_var("ENV_BOOL_NESTED_NESTED");
-    env::remove_var("ENV_ARR_NESTED_NESTED");
+    unsafe {
+        env::remove_var("ENV_STRING");
+    }
+    unsafe {
+        env::remove_var("ENV_INT");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_STRING_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_INT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_FLOAT_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_BOOL_NESTED_NESTED");
+    }
+    unsafe {
+        env::remove_var("ENV_ARR_NESTED_NESTED");
+    }
 }
