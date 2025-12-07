@@ -27,7 +27,7 @@ test:
 	LLVM_PROFILE_FILE="$(PROFILE_PATTERN)" \
 	cargo $(RUST_TOOLCHAIN) test --tests -- --test-threads=1
 
-cover: test
+cover:
 	@echo "merging profraw -> profdata..."
 	@$(LLVM_PROFDATA) merge -sparse $(OUT_DIR)/*.profraw -o $(PROFDATA)
 	@echo "generating lcov with grcov..."
